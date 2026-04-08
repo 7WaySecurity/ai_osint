@@ -17,6 +17,12 @@
 | Red Hat (Nov 2025) | MCP security risks and controls analysis | [Blog](https://www.redhat.com/en/blog/model-context-protocol-mcp-understanding-security-risks-and-controls) |
 | Pivot Point Security (Mar 2026) | 22% MCP servers allow file access outside scope; 5% seeded with tool poisoning | [Blog](https://www.pivotpointsecurity.com/what-is-the-model-context-protocol-mcp-in-ai-and-why-does-it-scare-cybersecurity-pros/) |
 | CloudSEK (Mar 2026) | 60+ Iranian groups using AI for ICS recon post-Iran-US escalation | [Blog](https://www.cloudsek.com/blog/ai-the-iran-us-conflict-and-the-threat-to-us-critical-infrastructure) |
+| Forbes (Sep 2025) | ~600 Claude conversations indexed by Google despite crawler blocking | [Article](https://www.forbes.com/sites/iainmartin/2025/09/08/hundreds-of-anthropic-chatbot-transcripts-showed-up-in-google-search/) |
+| Obsidian Security (2025) | 143K+ LLM conversations (Claude, ChatGPT, Copilot, Grok) on Archive.org | [Blog](https://www.obsidiansecurity.com/resource/143k-claude-copilot-chatgpt-chats-publicly-accessible-were-you-exposed) |
+| Oasis Security (Mar 2026) | "Claudy Day" — 3 vulns chained: open redirect + prompt injection + Files API exfil | [Blog](https://www.oasis.security/blog/claude-ai-prompt-injection-data-exfiltration-vulnerability) |
+| TechRadar (Mar 2026) | Claude Code 512K lines leaked via npm source map in v2.1.88 | [Article](https://www.techradar.com/pro/security/anthropic-confirms-it-leaked-512-000-lines-of-claude-code-source-code-spilling-some-of-its-biggest-secrets) |
+| Penligent (Apr 2026) | Claude Code source map leak deep analysis | [Blog](https://www.penligent.ai/hackinglabs/claude-code-source-map-leak-what-was-exposed-and-what-it-means/) |
+| Geol.ai (Jan 2026) | Claude transcript privacy risk analysis | [Blog](https://geol.ai/briefing/anthropics-claude-conversations-exposed-privacy-implications-in-ai-chatbots) |
 | Aqua Security | Jupyter targeted by botnets; first Python ransomware on Jupyter | [Blog](https://blog.aquasec.com/python-ransomware-jupyter-notebook) |
 | CSO Online | MLflow critical flaw leading to server compromise | [Article](https://www.csoonline.com/article/574831/critical-flaw-in-ai-testing-framework-mlflow-can-lead-to-server-and-data-compromise.html) |
 
