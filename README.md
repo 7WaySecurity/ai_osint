@@ -22,24 +22,6 @@
 
 ---
 
-<!-- 
-  GITHUB REPO CONFIGURATION (do this after creating the repo):
-  
-  1. Description (Settings → General):
-     "🤖 Curated AI OSINT resources — Google dorks, Shodan queries, GitHub dorks, and techniques to discover exposed LLM endpoints, leaked AI API keys, misconfigured vector databases, and unprotected AI agents"
-  
-  2. Topics/Tags (repo main page → gear icon next to About):
-     ai-osint, osint, ai-security, llm-security, google-dorks, shodan, red-team,
-     prompt-injection, mcp-security, ollama, vector-database, api-keys, 
-     cybersecurity, pentesting, bug-bounty, hacking, reconnaissance,
-     artificial-intelligence, machine-learning, owasp
-  
-  3. Social Preview (Settings → Social preview):
-     Upload a 1280x640px image with the logo + "AI OSINT" text
-  
-  4. Website URL: https://7waysecurity.co
--->
-
 > **AI OSINT** is a curated collection of Google dorks, Shodan queries, GitHub dorks, Censys queries, Sigma detection rules, threat intelligence, and security tools for finding exposed artificial intelligence infrastructure on the internet. It covers LLM endpoints (Ollama, vLLM, LM Studio), AI chatbot conversation leaks (ChatGPT, Grok, Perplexity), vector databases (Qdrant, Weaviate, ChromaDB, Milvus, Pinecone), AI agent gateways (OpenClaw, MCP servers), MLOps platforms (MLflow, Jupyter, Kubeflow), leaked AI API keys (OpenAI, Anthropic, Google Gemini, HuggingFace, Groq, Replicate, Cohere, Mistral, DeepSeek, ElevenLabs), and AI image generation services (Stable Diffusion, ComfyUI). Designed for Red Team operators, penetration testers, bug bounty hunters, and OSINT researchers working in AI/ML security.
 
 ---
@@ -50,7 +32,6 @@ Organizations are deploying LLMs, vector databases, and AI agents faster than th
 
 - **Ollama, vLLM, Gradio** — shipped with zero authentication by default
 - **ChatGPT, Grok** — shared conversations indexed by search engines with API keys, passwords, PII
-- **Claude** - shared artifacts indexed by search engines with sensitive information
 - **MCP servers** — exposed agent gateways with shell access, file system access, and stored credentials
 - **Qdrant, ChromaDB, MLflow** — no auth out of the box, exposing embeddings, models, and experiments
 
@@ -104,8 +85,15 @@ site:chatgpt.com/share "AWS_SECRET"
 site:perplexity.ai/search "API key"
 site:perplexity.ai/search "password"
 
-# Claude
+# Claude (Anthropic) — ~600 convos indexed by Google, 143K+ on Archive.org
+# 🔥 Original dork by 7WaySecurity
 site:claude.ai "public/artifacts"
+site:claude.ai/share "API key"
+site:claude.ai/share "sk-ant"
+site:claude.ai/share "password"
+site:claude.ai/share "AWS"
+site:claude.ai/share ".env"
+site:web.archive.org "claude.ai/share"
 
 # HuggingFace Spaces — keys hardcoded in public Git repos
 site:huggingface.co/spaces "sk-proj"
@@ -352,7 +340,8 @@ services.port=8888 AND services.http.response.html_title:"Jupyter"
 | Provider | Prefix | Length | Notes |
 |---|---|---|---|
 | **OpenAI** | `sk-proj-` | ~80+ chars | Current format since April 2024 |
-| **Anthropic** | `sk-ant-api03-` | ~90+ chars | OAuth tokens use `sk-ant-oat01-` |
+| **Anthropic** | `sk-ant-api03-` | ~90+ chars | API keys |
+| **Anthropic OAuth** | `sk-ant-oat01-` | — | OAuth tokens (Files API, etc.) |
 | **Google AI** | `AIzaSy` | 39 chars | ⚠️ Same prefix for Maps AND Gemini |
 | **HuggingFace** | `hf_` | ~34 chars | Read/write access tokens |
 | **Replicate** | `r8_` | ~40 chars | — |
@@ -447,6 +436,9 @@ path:.cursor/mcp.json
 - **Operation Bizarre Bazaar** — First large-scale LLMjacking: 35K attacks, commercial marketplace selling stolen AI access
 - **OpenClaw/Clawdbot Shodan Crisis** — CVE-2026-24061, "Localhost Trust" bypass
 - **ChatGPT/Grok Conversation Indexing** — Google indexed thousands of conversations with credentials
+- **Claude Conversation Indexing** — ~600 conversations indexed by Google (Forbes Sep 2025); 143K+ across all LLMs on Archive.org
+- **"Claudy Day" Attack Chain** — Open redirect + prompt injection + Files API exfiltration in claude.ai (Oasis Security, Mar 2026)
+- **Claude Code Source Map Leak** — 512K lines of source code exposed via npm package v2.1.88 (Mar 2026)
 - **MCP Supply Chain Timeline** — 10+ major breaches in MCP ecosystem
 - **175K Ollama Servers Exposed** — SentinelOne/Censys study across 130 countries
 - **AI-Assisted ICS Targeting** — 60+ Iranian groups using LLMs for critical infrastructure recon (Feb 2026)
@@ -499,6 +491,11 @@ path:.cursor/mcp.json
 | AuthZed | Complete MCP security breaches timeline | [Blog](https://authzed.com/blog/timeline-mcp-breaches) |
 | Pangea | Sensitive data in indexed ChatGPT histories | [Blog](https://pangea.cloud/blog/mining-the-index-uncovering-sensitive-data-in-public-chatgpt-histories-via-google-search/) |
 | Trail of Bits | 8 high-severity vulns in Gradio 5 audit | [Blog](https://blog.trailofbits.com/2024/10/10/auditing-gradio-5-hugging-faces-ml-gui-framework/) |
+| Oasis Security | "Claudy Day" — 3 vulns chained for data exfiltration from Claude | [Blog](https://www.oasis.security/blog/claude-ai-prompt-injection-data-exfiltration-vulnerability) |
+| Forbes | ~600 Claude conversations indexed by Google | [Article](https://www.forbes.com/sites/iainmartin/2025/09/08/hundreds-of-anthropic-chatbot-transcripts-showed-up-in-google-search/) |
+| Obsidian Security | 143K+ LLM chats (incl. Claude) on Archive.org | [Blog](https://www.obsidiansecurity.com/resource/143k-claude-copilot-chatgpt-chats-publicly-accessible-were-you-exposed) |
+| TechRadar | Claude Code 512K source lines leaked via npm | [Article](https://www.techradar.com/pro/security/anthropic-confirms-it-leaked-512-000-lines-of-claude-code-source-code-spilling-some-of-its-biggest-secrets) |
+| Penligent | Claude Code source map leak analysis | [Blog](https://www.penligent.ai/hackinglabs/claude-code-source-map-leak-what-was-exposed-and-what-it-means/) |
 
 ### Standards
 
