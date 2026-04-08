@@ -18,11 +18,28 @@
 ```
 
 ## Anthropic Keys
-> Anthropic became a GitHub secret scanning partner Aug 20, 2024. New commits trigger push protection, but **historical commits remain searchable**.
+> Anthropic became a GitHub secret scanning partner Aug 20, 2024. New commits trigger push protection, but **historical commits remain searchable**. OAuth tokens use `sk-ant-oat01-` prefix.
 ```
 "sk-ant-api03" path:*.env
 "sk-ant-api03" path:*.py
+"sk-ant-api03" path:*.js
+"sk-ant-api03" path:*.ts
+"sk-ant-oat01" path:*.env
 "ANTHROPIC_API_KEY" path:*.env NOT "your_key"
+"CLAUDE_API_KEY" path:*.env
+"claude" "api_key" path:*.py NOT "example"
+"anthropic" "api_key" path:*.yaml
+"anthropic" "api_key" path:*.json
+```
+
+## Claude Code Configs
+> Claude Code uses ~/.claude/ for configs. May contain API keys and project hooks.
+```
+path:.claude/settings.json
+path:.claude.json "api_key"
+"ANTHROPIC_API_KEY" path:*.sh "claude"
+"claude-code" path:docker-compose.yml
+path:.claude/CLAUDE.md
 ```
 
 ## Google AI / Gemini
