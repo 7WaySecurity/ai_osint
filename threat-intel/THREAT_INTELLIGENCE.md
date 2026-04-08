@@ -96,6 +96,60 @@ Following Feb 28, 2026 Iran-US escalation, 60+ Iranian-aligned hacktivist groups
 
 ---
 
+### 8. Claude Conversation Indexing & Archive Exposure
+
+**Period:** September 2025 — ongoing
+**Sources:** Forbes, Obsidian Security, Geol.ai
+
+~600 Claude conversations indexed by Google despite Anthropic claiming to block crawlers and not provide sitemaps. Forbes reported conversations contained staff names, emails, internal tasks, and excerpts of uploaded documents.
+
+Separately, security researcher dead1nfluence discovered **143,000+ LLM conversations** (including Claude, ChatGPT, Copilot, Grok, Mistral, Qwen) publicly accessible on **Archive.org** via the Wayback Machine CDX API. Exposed content included AWS Access Key IDs and a Replicate API token.
+
+**Enumeration technique:**
+```bash
+curl "https://web.archive.org/cdx/search/cdx?url=claude.ai/share/*&output=json&limit=10000"
+```
+
+**Key details:**
+- Published Claude artifacts (Free/Pro/Max plans) are fully public web pages — indexable by default
+- Team/Enterprise artifacts can only be shared within the organization
+- Anthropic changed its privacy policy in Sep 2025 to use chats for training unless users opt out
+
+---
+
+### 9. "Claudy Day" — Triple Vulnerability Chain in Claude.ai
+
+**Date:** March 19, 2026 (disclosed)
+**Source:** Oasis Security
+**Status:** Fixed by Anthropic
+
+Three vulnerabilities chained for a complete attack pipeline — targeted delivery → invisible prompt injection → silent data exfiltration:
+
+1. **Open Redirect on claude.com** — `claude.com/redirect/<target>` redirected without validation, including to attacker-controlled domains. Combined with Google Ads for precision targeting by location, industry, or even specific email addresses.
+
+2. **Prompt Injection via pre-filled prompts** — Hidden instructions injected into Claude sessions instructing it to search conversation history and memory for sensitive data.
+
+3. **Data Exfiltration via Anthropic Files API** — Claude's sandbox blocks outbound network but allows `api.anthropic.com`. Attacker embeds their own API key in the prompt, Claude writes victim data to a file and uploads it to the attacker's Anthropic account via the Files API.
+
+**Impact:** In basic sessions: conversation history, memory, business strategy, health data, PII. With MCP/integrations enabled: file access, messaging, API interactions on behalf of the victim.
+
+---
+
+### 10. Claude Code Source Map Leak — 512,000 Lines Exposed
+
+**Date:** March 30-31, 2026
+**Sources:** Penligent, TechRadar
+**Package:** @anthropic-ai/claude-code v2.1.88
+
+Anthropic's npm-distributed CLI exposed a `.map` file (source map) enabling outsiders to reconstruct readable TypeScript source. Multiple public GitHub mirrors appeared within hours claiming 512,000 lines reconstructed from `cli.js.map`. An `r2.dev/src.zip` path was also reported as publicly accessible.
+
+**Also in March 2026:**
+- **ShadowPrompt** (Koi Security, Mar 27) — Zero-click attack via Claude Code Chrome extension enabling data exfiltration
+- **CVE-2025-59536** — Arbitrary code execution through malicious project hooks
+- **CVE-2026-21852** — API key exfiltration during project-load flow
+
+---
+
 ## Key CVEs
 
 | CVE | Product | Description | CVSS |
@@ -109,6 +163,9 @@ Following Feb 28, 2026 Iran-US escalation, 60+ Iranian-aligned hacktivist groups
 | CVE-2024-37032 | Ollama | RCE "Probllama" | High |
 | CVE-2025-64513 | Milvus | Auth bypass via forged headers | Critical |
 | CVE-2023-1177 | MLflow | Arbitrary file read | 10.0 |
+| Claudy Day | claude.ai | Open redirect + prompt injection + Files API exfil chain | High |
+| ShadowPrompt | Claude Code Chrome ext | Zero-click data exfiltration | High |
+| Source Map Leak | Claude Code v2.1.88 | 512K lines exposed via npm .map file | Medium |
 
 ---
 
@@ -118,6 +175,11 @@ Following Feb 28, 2026 Iran-US escalation, 60+ Iranian-aligned hacktivist groups
 - [AuthZed — MCP Breaches Timeline](https://authzed.com/blog/timeline-mcp-breaches)
 - [GitGuardian — State of Secrets Sprawl 2026](https://blog.gitguardian.com/the-state-of-secrets-sprawl-2026/)
 - [Penligent — Clawdbot Post-Mortem](https://www.penligent.ai/hackinglabs/clawdbot-shodan-technical-post-mortem-and-defense-architecture-for-agentic-ai-systems-2026/)
+- [Forbes — Claude Conversations in Google Search](https://www.forbes.com/sites/iainmartin/2025/09/08/hundreds-of-anthropic-chatbot-transcripts-showed-up-in-google-search/)
+- [Obsidian Security — 143K LLM Chats on Archive.org](https://www.obsidiansecurity.com/resource/143k-claude-copilot-chatgpt-chats-publicly-accessible-were-you-exposed)
+- [Oasis Security — Claudy Day Vulnerabilities](https://www.oasis.security/blog/claude-ai-prompt-injection-data-exfiltration-vulnerability)
+- [TechRadar — Claude Code 512K Source Leak](https://www.techradar.com/pro/security/anthropic-confirms-it-leaked-512-000-lines-of-claude-code-source-code-spilling-some-of-its-biggest-secrets)
+- [Penligent — Source Map Leak Analysis](https://www.penligent.ai/hackinglabs/claude-code-source-map-leak-what-was-exposed-and-what-it-means/)
 - [vulnerablemcp.info](https://vulnerablemcp.info/)
 - [OWASP Top 10 for LLMs 2025](https://owasp.org/www-project-top-10-for-large-language-model-applications/)
 - [MITRE ATLAS](https://atlas.mitre.org/)
