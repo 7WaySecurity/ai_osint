@@ -58,6 +58,42 @@ site:perplexity.ai/search "credentials"
 site:perplexity.ai/search "internal"
 ```
 
+### Claude (Anthropic) — 🟢 ACTIVE
+> ~600 Claude conversations indexed by Google (Forbes, Sep 2025). 143,000+ LLM conversations (incl. Claude) archived on Archive.org. Published artifacts are publicly accessible and indexable.
+
+```
+# Published Artifacts — publicly accessible apps, tools, code
+# 🔥 ORIGINAL DORK by 7WaySecurity
+site:claude.ai "public/artifacts"
+
+# Shared conversations
+site:claude.ai/share "API key"
+site:claude.ai/share "password"
+site:claude.ai/share "secret"
+site:claude.ai/share "token"
+site:claude.ai/share "sk-proj"
+site:claude.ai/share "sk-ant"
+site:claude.ai/share "AWS"
+site:claude.ai/share "credentials"
+site:claude.ai/share "database"
+site:claude.ai/share "private key"
+site:claude.ai/share ".env"
+site:claude.ai/share "connection string"
+site:claude.ai/share "mongodb://"
+site:claude.ai/share "postgres://"
+site:claude.ai/share "firebase"
+site:claude.ai/share "supabase"
+site:claude.ai/share "internal" "architecture"
+
+# Artifact catalog — public directory of published artifacts
+site:claude.ai/catalog
+
+# Archive.org Wayback Machine — 143K+ LLM conversations archived
+# Use Wayback CDX API to enumerate:
+# curl "https://web.archive.org/cdx/search/cdx?url=claude.ai/share/*&output=json&limit=10000"
+site:web.archive.org "claude.ai/share"
+```
+
 ---
 
 ## HuggingFace — 🟢 ACTIVE
