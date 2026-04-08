@@ -63,7 +63,7 @@ site:perplexity.ai/search "internal"
 
 ```
 # Published Artifacts — publicly accessible apps, tools, code
-# 🔥 ORIGINAL DORK by 7WaySecurity
+# 🔥 Original dork by 7WaySecurity
 site:claude.ai "public/artifacts"
 
 # Shared conversations
@@ -89,7 +89,7 @@ site:claude.ai/share "internal" "architecture"
 site:claude.ai/catalog
 
 # Archive.org Wayback Machine — 143K+ LLM conversations archived
-# Use Wayback CDX API to enumerate:
+# Enumerate via CDX API:
 # curl "https://web.archive.org/cdx/search/cdx?url=claude.ai/share/*&output=json&limit=10000"
 site:web.archive.org "claude.ai/share"
 ```
