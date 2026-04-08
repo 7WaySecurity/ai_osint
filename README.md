@@ -50,6 +50,7 @@ Organizations are deploying LLMs, vector databases, and AI agents faster than th
 
 - **Ollama, vLLM, Gradio** — shipped with zero authentication by default
 - **ChatGPT, Grok** — shared conversations indexed by search engines with API keys, passwords, PII
+- **Claude** - shared artifacts indexed by search engines with sensitive information
 - **MCP servers** — exposed agent gateways with shell access, file system access, and stored credentials
 - **Qdrant, ChromaDB, MLflow** — no auth out of the box, exposing embeddings, models, and experiments
 
@@ -102,6 +103,9 @@ site:chatgpt.com/share "AWS_SECRET"
 # Perplexity AI
 site:perplexity.ai/search "API key"
 site:perplexity.ai/search "password"
+
+# Claude
+site:claude.ai "public/artifacts"
 
 # HuggingFace Spaces — keys hardcoded in public Git repos
 site:huggingface.co/spaces "sk-proj"
