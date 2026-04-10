@@ -72,7 +72,7 @@ site:grok.com/share "API key"
 site:grok.com/share "secret"
 site:grok.com/share "token"
 site:grok.com/share "credentials"
-site:grok.com/share "sk-proj"
+site:grok.com/share "keyword"
 
 # ChatGPT — Feature removed Aug 2025, cached results diminishing
 # Try on DuckDuckGo which continued indexing after Google stopped
