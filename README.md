@@ -205,8 +205,8 @@ path:dataset.jsonl "instruction" "output"
 ### Self-Hosted LLMs
 
 ```
-# Ollama — 175,000+ exposed instances worldwide
-"Ollama is running" port:11434
+# Ollama — 240,000+ exposed instances worldwide
+port:11434 product:"Ollama"
 port:11434 http.html:"Ollama"
 port:11434 "api/tags"
 
