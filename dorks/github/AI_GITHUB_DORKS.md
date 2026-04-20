@@ -155,6 +155,119 @@ path:docker-compose.yml "milvus"
 path:docker-compose.yml "vllm"
 ```
 
+---
+
+## 🆕 MCP Configuration Leaks (v1.2.0)
+
+> Systemic RCE in MCP STDIO transport affects every SDK language. 10+ High/Critical CVEs issued (Ox Security, April 2026).
+
+```
+# MCP JSON configs with commands and args
+path:*.json "mcpServers" "command" "args"
+path:.cursor/mcp.json "apiKey"
+path:mcp.json "stdio" "env"
+path:*.json "mcp_servers" "OPENAI_API_KEY"
+
+# Windsurf IDE (CVE-2026-30615)
+path:*.json "windsurf" "mcpServers"
+```
+
+---
+
+## 🆕 Claude Code & Anthropic Token Patterns (v1.2.0)
+
+> Claude Code source map leaked March 31, 2026. New token prefix `sk-ant-oat01-` for OAuth.
+
+```
+# Active API keys (exclude examples/tests)
+"sk-ant-api03-" NOT "example" NOT "test" NOT "xxx"
+"sk-ant-oat01-" NOT "example"
+
+# Claude Code artifacts
+"@anthropic-ai/claude-code" "source" "map"
+
+# CLAUDE.md permission files (attack vector for 50-subcommand bypass)
+"CLAUDE.md" "permission" "allow"
+path:CLAUDE.md "bash" "allow"
+```
+
+---
+
+## 🆕 AI IDE YOLO Mode / Config Exploitation (v1.2.0)
+
+> CVE-2025-53773: Copilot modifies `.vscode/settings.json` to enable autoApprove via prompt injection.
+
+```
+# VS Code YOLO mode activation
+path:.vscode/settings.json "chat.tools.autoApprove" "true"
+path:.vscode/settings.json "github.copilot" "autoApprove"
+
+# Tasks.json MCP manipulation
+path:.vscode/tasks.json "mcp" "command"
+```
+
+---
+
+## 🆕 AI Agent Secrets (v1.2.0)
+
+```
+# DeepSeek
+path:*.env "DEEPSEEK_API_KEY"
+"DEEPSEEK_API_KEY" NOT "your_key" NOT "example"
+
+# Groq (expanding existing)
+path:*.env "GROQ_API_KEY" OR "gsk_"
+"gsk_" path:*.py NOT "example"
+
+# Mistral
+path:*.env "MISTRAL_API_KEY"
+"MISTRAL_API_KEY" path:*.yaml
+
+# Cohere
+path:*.env "COHERE_API_KEY"
+
+# Ollama remote configs
+path:*.yaml "ollama" "api_key" OR "OLLAMA_HOST"
+path:*.env "OLLAMA_HOST" "0.0.0.0"
+```
+
+---
+
+## 🆕 Vulnerable MCP Server Implementations (v1.2.0)
+
+```
+# MCP TypeScript SDK vulnerable pattern (CVE-2026-25536)
+"McpServer" "StreamableHTTPServerTransport" language:typescript
+
+# MCP STDIO with arbitrary commands
+"mcp" "stdio" "command" "npx" language:json
+"mcp" "stdio" "command" "python" language:json
+
+# Flowise MCP adapter (CVE-2026-40933)
+"flowise" "mcp" "adapter" language:typescript
+
+# Agent Zero MCP (CVE-2026-30624)
+"agent-zero" "mcp_servers" language:json
+
+# nginx-ui MCP endpoint (CVE-2026-33032 — actively exploited)
+"nginx-ui" "mcp" "mcp_message" language:go
+```
+
+---
+
+## 🆕 ChatGPT Credential Harvesting Patterns (v1.2.0)
+
+> IBM X-Force 2026: 300,000+ ChatGPT credentials found on dark web.
+
+```
+# ChatGPT session tokens
+"chatgpt" "session" "token" path:*.json
+"openai" "access_token" path:*.env
+
+# Codex CLI tokens
+"codex" "GITHUB_TOKEN" path:*.env
+"codex" "installation" "access_token"
+```
 ## Training Data
 ```
 path:train.jsonl "prompt" "completion"
