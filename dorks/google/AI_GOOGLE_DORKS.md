@@ -214,3 +214,97 @@ site:*.railway.app "ollama"
 site:*.render.com "gradio"
 site:*.hf.space
 ```
+
+---
+
+## 🆕 MCP Server Configuration Exposure (v1.2.0)
+
+> MCP supply chain now constitutes 150M+ downloads. Ox Security found systemic RCE across MCP SDKs (April 2026).
+
+```
+# MCP server configs with embedded secrets
+site:github.com "mcp_servers" "command" filetype:json
+site:github.com "mcpServers" "args" filetype:json
+site:github.com path:*.json "stdio" "mcp" "command"
+site:github.com "mcp.config" "apiKey"
+site:github.com ".cursor" "mcpServers" filetype:json
+
+# Windsurf IDE configs (CVE-2026-30615 — zero-click RCE)
+site:github.com "windsurf" "mcp" "config" filetype:json
+site:github.com ".windsurf" "mcpServers"
+```
+
+---
+
+## 🆕 Claude Code Source Leak Artifacts (v1.2.0)
+
+> On March 31, 2026 Anthropic accidentally published a 59.8 MB source map for Claude Code v2.1.88 to npm. Fake repos are distributing Vidar/GhostSocks malware.
+
+```
+# Legitimate source analysis
+site:npm.io "@anthropic-ai/claude-code"
+site:github.com "@anthropic-ai/claude-code" ".map"
+
+# ⚠️ Malware lure detection — fake leaked repos
+site:github.com "claude-code" "leaked" "source"
+site:github.com "claude code" "unlocked" "enterprise"
+```
+
+---
+
+## 🆕 AI Agent Configuration Leaks (v1.2.0)
+
+```
+# Agent Zero configs (CVE-2026-30624 — RCE via MCP config)
+site:github.com "agent-zero" "mcp" filetype:json
+
+# Flowise configs (CVE-2026-40933 — RCE via MCP adapters)
+site:github.com "flowise" "mcp" "stdio"
+
+# Claude API keys in various formats
+site:github.com "CLAUDE_API_KEY" filetype:env
+site:github.com "ANTHROPIC_API_KEY" filetype:yaml
+
+# Codex (OpenAI) tokens
+site:github.com "codex" "GITHUB_TOKEN" filetype:env
+
+# DeepSeek exposure
+site:github.com "deepseek" "api_key" OR "DEEPSEEK_API_KEY"
+site:github.com "deepseek" filetype:env
+```
+
+---
+
+## 🆕 AI IDE YOLO Mode Detection (v1.2.0)
+
+> CVE-2025-53773 (CVSS 7.8): Prompt injection enables GitHub Copilot to activate "YOLO mode" and execute arbitrary commands.
+
+```
+# VS Code autoApprove configs
+site:github.com "chat.tools.autoApprove" "true" filetype:json
+site:github.com "settings.json" "autoApprove" "copilot"
+```
+
+---
+
+## 🆕 DeepSeek Infrastructure Exposure (v1.2.0)
+
+> Wiz found a publicly accessible ClickHouse database with 1M+ log entries, plaintext chat histories, and API keys (Jan 2025).
+
+```
+site:github.com "deepseek" "api_key" OR "DEEPSEEK_API_KEY"
+site:github.com "deepseek" filetype:env
+site:github.com "deepseek" "ClickHouse" "oauth2callback"
+```
+
+---
+
+## 🆕 Project Glasswing / Mythos References (v1.2.0)
+
+> Claude Mythos Preview autonomously found thousands of 0-days including a 27-year-old OpenBSD RCE.
+
+```
+site:github.com "mythos" "vulnerability" "exploit"
+site:github.com "glasswing" "anthropic"
+site:github.com "mcpSafetyScanner"
+```
