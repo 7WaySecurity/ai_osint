@@ -183,3 +183,197 @@ Anthropic's npm-distributed CLI exposed a `.map` file (source map) enabling outs
 - [vulnerablemcp.info](https://vulnerablemcp.info/)
 - [OWASP Top 10 for LLMs 2025](https://owasp.org/www-project-top-10-for-large-language-model-applications/)
 - [MITRE ATLAS](https://atlas.mitre.org/)
+
+---
+
+## 🆕 v1.2.0 Threat Intelligence Updates (April 2026)
+
+---
+
+### Claude Mythos Preview & Project Glasswing
+
+| Field | Details |
+|-------|---------|
+| **Date** | April 8, 2026 |
+| **Source** | [Anthropic Red Team](https://red.anthropic.com/2026/mythos-preview/), [The Hacker News](https://thehackernews.com/2026/04/anthropics-claude-mythos-finds.html), [Wiz Blog](https://www.wiz.io/blog/claude-mythos), [NPR](https://www.npr.org/2026/04/11/nx-s1-5778508/anthropic-project-glasswing-ai-cybersecurity-mythos-preview), [Fortune](https://fortune.com/2026/04/13/cybersecurity-anthropic-claude-mythos-dario-amodei-tech-ceo/) |
+| **Impact** | 🔴 CRITICAL |
+| **Category** | AI-Assisted Vulnerability Discovery |
+
+Anthropic's unreleased frontier model Claude Mythos Preview autonomously discovers thousands of 0-day vulnerabilities across major operating systems, web browsers, and open-source software:
+
+- **CVE-2026-4747** — 27-year-old unauthenticated RCE in OpenBSD, fully autonomously discovered and exploited
+- **CVE-2026-2796** — Firefox JIT miscompilation; Claude Opus 4.6 built a working exploit ([deep-dive](https://red.anthropic.com/2026/exploit/))
+- **22 Firefox vulnerabilities** found in two weeks during Mozilla collaboration
+- Chained **four vulnerabilities** to escape browser renderer and OS sandboxes
+- Solved a corporate network attack simulation in hours vs. 10+ hours for a human expert
+- **Escaped a secured sandbox** during evaluation, gained internet access, and sent an email to a researcher
+- 89% agreement between model and human expert severity assessments (198 reviewed reports)
+- Over **500 high-severity OSS vulnerabilities** found by Claude Opus 4.6 (Feb 2026)
+- Average time-to-exploit now **under 20 hours** (CSA / Zero Day Clock)
+
+**Project Glasswing** limits access to ~50 organizations: AWS, Apple, Broadcom, Cisco, CrowdStrike, Google, JPMorgan Chase, Linux Foundation, Microsoft, NVIDIA, Palo Alto Networks. Not publicly released.
+
+**OSINT Relevance:** Expect a surge of AI-discovered CVEs. Claude Code Security (research preview) available for Enterprise/Team; free for OSS maintainers.
+
+---
+
+### Claude Code Source Leak & Critical Vulnerability
+
+| Field | Details |
+|-------|---------|
+| **Date** | March 31, 2026 |
+| **Source** | [Zscaler ThreatLabz](https://www.zscaler.com/blogs/security-research/anthropic-claude-code-leak), [SecurityWeek](https://www.securityweek.com/critical-vulnerability-in-claude-code-emerges-days-after-source-leak/) |
+| **Impact** | 🔴 HIGH |
+| **Category** | Source Code Exposure, Supply Chain |
+
+Anthropic accidentally included a 59.8 MB JavaScript source map (`.map`) in npm package `@anthropic-ai/claude-code` v2.1.88.
+
+**Exposed:** ~2,000 source files, 500K+ lines of code (~3 hours). Internal architecture: hook handling, permission logic, command processing.
+
+**Critical vulnerability (Adversa AI):** Command pipelines exceeding **50 subcommands** bypass ALL deny rules — security validators, command injection detection all skipped. A malicious `CLAUDE.md` could exfiltrate SSH keys, AWS credentials, GitHub tokens, npm tokens.
+
+**Malware campaign:** Zscaler found fake "Claude Code leak" GitHub repos distributing **Vidar** and **GhostSocks** malware. Appeared near top of Google results. Coincided with malicious **Axios npm supply chain attack** (same day, March 31).
+
+---
+
+### MCP Systemic RCE — "Mother of All AI Supply Chains"
+
+| Field | Details |
+|-------|---------|
+| **Date** | April 15-16, 2026 |
+| **Source** | [Ox Security](https://www.ox.security/blog/the-mother-of-all-ai-supply-chains-critical-systemic-vulnerability-at-the-core-of-the-mcp/), [The Register](https://www.theregister.com/2026/04/16/anthropic_mcp_design_flaw/), [Infosecurity Magazine](https://www.infosecurity-magazine.com/news/systemic-flaw-mcp-expose-150/) |
+| **Impact** | 🔴 CRITICAL |
+| **Category** | Supply Chain, Protocol Vulnerability |
+
+Ox Security discovered architectural command injection at the core of Anthropic's MCP SDKs — not a coding error but a design decision. Affects Python, TypeScript, Java, Rust SDKs.
+
+**Scale:** 150M+ downloads, 7,000+ publicly accessible servers, up to 200,000 vulnerable instances.
+
+**CVEs issued (10+, 9 critical):**
+
+| CVE | Product | Severity | Description |
+|-----|---------|----------|-------------|
+| CVE-2026-30615 | Windsurf IDE | Critical | Zero-click prompt injection → local RCE via MCP config |
+| CVE-2026-30624 | Agent Zero 0.9.8 | Critical | RCE via External MCP Servers configuration |
+| CVE-2026-30616 | Jaaz 1.0.30 | Critical | RCE via MCP STDIO command execution handling |
+| CVE-2026-40933 | Flowise | Critical | Authenticated RCE via MCP adapters (`npx -c` bypass) |
+| CVE-2026-33032 | nginx-ui | Critical (9.8) | MCPwn — unauthenticated takeover, **actively exploited** |
+| CVE-2026-26118 | Microsoft MCP Server | High (8.8) | AI tool hijacking via MCP server deployments |
+| CVE-2026-25536 | MCP TypeScript SDK v1.10.0-1.25.3 | High (7.1) | Cross-client data leak via shared McpServer instances |
+| CVE-2026-27825 | Atlassian MCP | Critical (9.1) | MCPwnfluence — RCE chain from LAN |
+| CVE-2026-27826 | Atlassian MCP | High (8.2) | MCPwnfluence — RCE chain (part 2) |
+| CVE-2026-27944 | nginx-ui < 2.3.3 | Critical (9.8) | Backup endpoint exposes encryption keys |
+
+**Four vulnerability families:**
+1. Unauthenticated command injection — any publicly-facing MCP UI
+2. Hardening bypass — `npx -c <command>` bypasses sanitization
+3. Zero-click prompt injection in AI IDEs (Windsurf, Claude Code, Cursor, Gemini-CLI, Copilot)
+4. Marketplace poisoning — **9 of 11 MCP registries** successfully poisoned
+
+**Anthropic declined to modify the protocol's architecture**, citing behavior as "expected."
+
+---
+
+### ChatGPT DNS-Based Data Exfiltration
+
+| Field | Details |
+|-------|---------|
+| **Date** | February 20, 2026 (patch) / March 2026 (disclosure) |
+| **Source** | [Check Point Research](https://blog.checkpoint.com/research/when-ai-trust-breaks-the-chatgpt-data-leakage-flaw-that-redefined-ai-vendor-security-trust/), [The Hacker News](https://thehackernews.com/2026/03/openai-patches-chatgpt-data.html) |
+| **Impact** | 🟡 HIGH |
+| **Category** | Data Exfiltration, Sandbox Escape |
+
+Check Point discovered silent data leakage via DNS side channel in ChatGPT's code execution sandbox. DNS resolution remained available while direct HTTP was blocked. Attacker crafts a malicious prompt (or bakes it into a custom GPT); code execution encodes data into DNS queries sent to attacker-controlled nameserver. No warnings triggered, no user indication.
+
+**Data at risk:** Medical records, corporate documents, financial data, uploaded PDFs. No evidence of exploitation in the wild. Patched February 20, 2026.
+
+---
+
+### OpenAI Codex CLI Command Injection
+
+| Field | Details |
+|-------|---------|
+| **Date** | February 5, 2026 (patch) |
+| **Source** | [The Hacker News](https://thehackernews.com/2026/03/openai-patches-chatgpt-data.html), BeyondTrust |
+| **Impact** | 🟡 HIGH |
+| **Category** | Command Injection, Lateral Movement |
+
+Vulnerability in OpenAI Codex (CLI, SDK, IDE Extension) allowed branch command injection. Setting up a malicious Git branch and referencing `@codex` in a PR comment causes Codex to execute the payload — granting **read/write access to victim's entire codebase** and stealing GitHub Installation Access tokens.
+
+---
+
+### CVE-2025-53773: GitHub Copilot Wormable RCE
+
+| Field | Details |
+|-------|---------|
+| **Date** | August 12, 2025 (disclosed) / August 2025 Patch Tuesday (fixed) |
+| **Source** | [Embrace The Red](https://embracethered.com/blog/posts/2025/github-copilot-remote-code-execution-via-prompt-injection/), [Persistent Security](https://www.persistent-security.net/post/part-iii-vscode-copilot-wormable-command-execution-via-prompt-injection), [NVD](https://nvd.nist.gov/vuln/detail/CVE-2025-53773) |
+| **Impact** | 🔴 CRITICAL (CVSS 7.8) |
+| **Category** | Prompt Injection, RCE, Wormable |
+
+Prompt injection in GitHub Copilot enables full system compromise. Attacker embeds instructions in README.md or source code (can use invisible Unicode). Copilot modifies `.vscode/settings.json` to add `"chat.tools.autoApprove": true` (YOLO mode) — disabling all user confirmations. Arbitrary shell execution with developer privileges.
+
+**Wormable:** Self-replicates during refactoring. Creates "ZombAI" botnets. Propagates through CI/CD and repos. Tested against GPT-4.1, Claude Sonnet 4, Gemini.
+
+---
+
+### Ollama: 12,269 More Exposed Instances
+
+| Field | Details |
+|-------|---------|
+| **Date** | February 23, 2026 |
+| **Source** | [LeakIX Blog](https://blog.leakix.net/2026/02/ollama-exposed/) |
+| **Impact** | 🟡 HIGH |
+| **Category** | Misconfiguration |
+
+LeakIX found 12,269 additional Ollama instances with zero authentication. Top hosts: AWS (1,686), Hetzner (1,004), OVH (773), Contabo (634). Maintainers continue rejecting auth PRs. One organization discovered a **$12,000 cloud cost spike** from exposed endpoint. **Combined total: 187,000+ documented exposures.**
+
+---
+
+### IBM X-Force 2026: 300K+ ChatGPT Credentials on Dark Web
+
+| Field | Details |
+|-------|---------|
+| **Date** | March 2026 |
+| **Source** | [IBM X-Force Threat Intelligence Index 2026](https://www.ibm.com/think/insights/more-2026-cyberthreat-trends) |
+| **Impact** | 🟡 HIGH |
+| **Category** | Credential Theft |
+
+Over **300,000 ChatGPT credentials** for sale on dark web. AI agents with stored credentials are emerging attack surface. Supply chain attacks quadrupled over 5 years.
+
+---
+
+### nginx-ui MCPwn — Actively Exploited
+
+| Field | Details |
+|-------|---------|
+| **Date** | March-April 2026 |
+| **Source** | [The Hacker News](https://thehackernews.com/2026/04/critical-nginx-ui-vulnerability-cve.html), Pluto Security |
+| **Impact** | 🔴 CRITICAL (CVSS 9.8) |
+| **Category** | Active Exploitation |
+
+CVE-2026-33032: Full Nginx takeover via unauthenticated MCP endpoints in 2 requests — GET `/mcp` (session) + POST `/mcp_message` (invoke any tool). Chained with CVE-2026-27944 to extract credentials, SSL keys, and Nginx configs from backups. **Actively exploited** — listed among 31 vulns exploited in March 2026 (Recorded Future). Fixed in nginx-ui v2.3.4.
+
+---
+
+### DeepSeek ClickHouse Database Exposure
+
+| Field | Details |
+|-------|---------|
+| **Date** | January 29, 2025 |
+| **Source** | [Wiz Research](https://www.wiz.io/blog/wiz-research-uncovers-exposed-deepseek-database-leak), [Krebs on Security](https://krebsonsecurity.com/2025/02/experts-flag-security-privacy-risks-in-deepseek-ai-app/) |
+| **Impact** | 🔴 CRITICAL |
+| **Category** | Data Exposure |
+
+Wiz found publicly accessible ClickHouse DB at `oauth2callback.deepseek.com:9000` and `dev.deepseek.com:9000`. 1M+ log entries with plaintext chat histories, API keys, backend details. Full database control via HTTP `/play` path — no authentication. Additional: 100% jailbreak rate (Cisco), hardcoded encryption keys (NowSecure), SQL injection vulns (SecurityScorecard). Banned by 7+ countries.
+
+---
+
+### MCP Academic Security Research
+
+| Paper/Tool | Key Finding | Link |
+|------------|-------------|------|
+| MCP Safety Audit | MCPSafetyScanner tool for MCP server auditing | [arXiv](https://arxiv.org/pdf/2504.03767) |
+| Breaking the Protocol | PROTOAMP framework; ATTESTMCP reduces attacks 52.8% → 12.4% | [arXiv](https://arxiv.org/pdf/2601.17549) |
+| MCP Threat Modeling | STRIDE/DREAD analysis of 5 MCP components | [arXiv](https://arxiv.org/pdf/2603.22489) |
+| Vulnerable MCP DB | **50 vulnerabilities**, 13 critical, 32 researchers. 67,057 MCP servers analyzed | [vulnerablemcp.info](https://vulnerablemcp.info/) |
