@@ -56,3 +56,89 @@
 | MITRE ATLAS | [atlas.mitre.org](https://atlas.mitre.org/) |
 | MCP Security Best Practices | [modelcontextprotocol.io](https://modelcontextprotocol.io/specification/draft/basic/security_best_practices) |
 | NIST AI Risk Management Framework | [nist.gov](https://www.nist.gov/artificial-intelligence) |
+
+---
+
+## 🆕 v1.2.0 Tool Additions (April 2026)
+
+---
+
+### MCPSafetyScanner
+
+| Field | Details |
+|-------|---------|
+| **URL** | [github.com/johnhalloran321/mcpSafetyScanner](https://github.com/johnhalloran321/mcpSafetyScanner) |
+| **Purpose** | Audit MCP server configurations for security vulnerabilities |
+| **By** | Academic Research (Leidos) |
+| **AI-Specific** | ✅ Purpose-built for MCP security auditing |
+
+Tool from the "MCP Safety Audit" paper (arXiv). Evaluates MCP server definitions for prompt injection vectors, tool poisoning, and excessive permissions. Integrates with the PROTOAMP framework for bridging agent security benchmarks to MCP infrastructure.
+
+---
+
+### Cisco AI Supply Chain Scanners
+
+| Field | Details |
+|-------|---------|
+| **URL** | Cisco Talos GitHub (open source) |
+| **Purpose** | Security scanning for MCP, A2A, agentic skill files, pickle files |
+| **By** | Cisco AI Threat Intelligence & Security Research |
+| **AI-Specific** | ✅ Purpose-built for AI supply chain security |
+
+Released with Cisco State of AI Security 2026 report:
+- **Structure-aware pickle fuzzer** — adversarial pickle file generation
+- **MCP server scanner** — MCP implementation vulnerability detection
+- **A2A (Agent-to-Agent) scanner** — Google A2A protocol security
+- **Agentic skill file scanner** — malicious skill definition detection
+
+---
+
+### DorkEye
+
+| Field | Details |
+|-------|---------|
+| **URL** | GitHub (search "DorkEye OSINT framework") |
+| **Purpose** | Automated Google Dorking with multi-agent analysis pipeline |
+| **By** | Open Source Community |
+| **AI-Specific** | ⚡ Configurable for AI infrastructure dorking |
+
+Python OSINT framework: interactive wizard, dork generator, multi-agent analysis (SQLi detection, secrets scanning, security analysis), HTML report export. Can be configured with AI-specific dork sets from this repository.
+
+---
+
+### Claude Code Security
+
+| Field | Details |
+|-------|---------|
+| **URL** | [claude.com/solutions/claude-code-security](https://claude.com/solutions/claude-code-security) |
+| **Purpose** | AI-powered static analysis — finds context-dependent vulnerabilities that rule-based tools miss |
+| **By** | Anthropic |
+| **AI-Specific** | ✅ AI model performing security analysis |
+
+Limited research preview for Enterprise/Team. Free for OSS maintainers. Built on Claude Opus 4.6 (500+ vulns found in production OSS). Reads code like a human researcher — traces data flows, catches business logic flaws.
+
+> ⚠️ Defensive capability that Red Team operators should be aware of.
+
+---
+
+### ATTESTMCP
+
+| Field | Details |
+|-------|---------|
+| **URL** | Academic (arXiv: "Breaking the Protocol") |
+| **Purpose** | MCP protocol extension: capability attestation + message authentication |
+| **By** | Academic Research |
+| **AI-Specific** | ✅ MCP protocol hardening |
+
+Reduces MCP attack success from 52.8% → 12.4% with 8.3ms overhead. Adds capability attestation, message authentication, and trust propagation controls. Backward-compatible.
+
+---
+
+### Vulnerable MCP Database (UPDATE)
+
+| Field | Details |
+|-------|---------|
+| **URL** | [vulnerablemcp.info](https://vulnerablemcp.info/) |
+| **Status** | **UPDATED:** 50 vulnerabilities, 13 critical, 32 researchers |
+
+New entries: CVE-2026-25536 (TypeScript SDK), CVE-2026-30615/30624/30616/40933 (Ox batch), CVE-2026-33032 (nginx-ui MCPwn), CVE-2026-27825/27826 (Atlassian). Academic analysis of 67,057 MCP servers across 6 registries.
