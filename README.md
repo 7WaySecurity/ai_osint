@@ -17,12 +17,14 @@
 </p>
 
 <p align="center">
-  <code>187,000+ Ollama servers exposed` · `370,000+ Grok conversations indexed` · `AI credential leaks up 81% YoY` · `150M+ MCP downloads affected by systemic RCE` · `300K+ ChatGPT creds on dark web</code>
+  <code>`187,000+ Ollama servers exposed`</code> · <code>`370,000+ Grok conversations indexed`</code> · <code>`AI credential leaks up 81% YoY`</code> · <code>`150M+ MCP downloads affected by systemic RCE`</code> · <code>`300K+ ChatGPT creds on dark web`</code>
 </p>
 
 ---
 
 > **AI OSINT** is a curated collection of Google dorks, Shodan queries, GitHub dorks, Censys queries, Sigma detection rules, threat intelligence, and security tools for finding exposed artificial intelligence infrastructure on the internet. It covers LLM endpoints (Ollama, vLLM, LM Studio), AI chatbot conversation leaks (ChatGPT, Grok, Perplexity), vector databases (Qdrant, Weaviate, ChromaDB, Milvus, Pinecone), AI agent gateways (OpenClaw, MCP servers), MLOps platforms (MLflow, Jupyter, Kubeflow), leaked AI API keys (OpenAI, Anthropic, Google Gemini, HuggingFace, Groq, Replicate, Cohere, Mistral, DeepSeek, ElevenLabs), and AI image generation services (Stable Diffusion, ComfyUI). Designed for Red Team operators, penetration testers, bug bounty hunters, and OSINT researchers working in AI/ML security.
+
+It now also covers MCP supply chain attacks (systemic STDIO RCE, marketplace poisoning), AI IDE exploitation (Copilot YOLO mode, Windsurf zero-click), AI model leak incidents (Claude Code source map, DeepSeek ClickHouse exposure), AI-assisted vulnerability discovery (Mythos/Glasswing), and ChatGPT data exfiltration techniques.
 
 ---
 
@@ -34,6 +36,9 @@ Organizations are deploying LLMs, vector databases, and AI agents faster than th
 - **ChatGPT, Grok** — shared conversations indexed by search engines with API keys, passwords, PII
 - **MCP servers** — exposed agent gateways with shell access, file system access, and stored credentials
 - **Qdrant, ChromaDB, MLflow** — no auth out of the box, exposing embeddings, models, and experiments
+- **AI IDEs (Copilot, Cursor, Windsurf)** — prompt injection enables YOLO mode activation, wormable RCE across developer workstations
+- **MCP supply chain** — 9 of 11 MCP marketplaces poisoned in proof-of-concept; 150M+ downloads affected by systemic RCE
+- **AI code execution sandboxes** — DNS side channels bypass outbound network guardrails, enabling silent data exfiltration
 
 This repository gives Red Team operators and OSINT professionals the exact queries to find it all.
 
@@ -134,6 +139,21 @@ filetype:yaml "openai" "api_key"
 filetype:json "anthropic" "api_key"
 ```
 
+### MCP Server Config Exposure (v1.2.0)
+
+```
+# MCP server configs with embedded secrets (systemic RCE — Ox Security, April 2026)
+site:github.com "mcpServers" "args" filetype:json
+site:github.com "mcp.config" "apiKey"
+site:github.com ".cursor" "mcpServers" filetype:json
+site:github.com "windsurf" "mcp" "config" filetype:json
+
+# Claude Code leak artifacts
+site:github.com "claude-code" "leaked" "source"
+
+# VS Code YOLO mode (CVE-2025-53773)
+site:github.com "chat.tools.autoApprove" "true" filetype:json
+```
 ---
 
 ## 🐙 GitHub Dorks
@@ -196,6 +216,20 @@ path:train.jsonl "prompt" "completion"
 path:dataset.jsonl "instruction" "output"
 ```
 
+### MCP & AI IDE Config Exploitation (v1.2.0)
+
+```
+# MCP STDIO configs (systemic RCE — 10+ CVEs)
+path:*.json "mcpServers" "command" "args"
+path:.vscode/settings.json "chat.tools.autoApprove" "true"
+
+# Claude Code attack vectors
+"CLAUDE.md" "permission" "allow"
+
+# DeepSeek keys
+path:*.env "DEEPSEEK_API_KEY"
+"DEEPSEEK_API_KEY" NOT "your_key" NOT "example"
+```
 ---
 
 ## 🔭 Shodan Queries
@@ -269,6 +303,31 @@ http.title:"JupyterLab" port:8888
 http.title:"TensorBoard" port:6006
 ```
 
+### MCP & AI Agent Gateways (v1.2.0)
+
+```
+# MCP endpoints (systemic RCE — Ox Security)
+http.html:"mcp" "tools" port:3000
+http.html:"Model Context Protocol" port:8080
+
+# nginx-ui MCP (CVE-2026-33032 — actively exploited, CVSS 9.8)
+http.title:"Nginx UI" port:443
+
+# Flowise (CVE-2026-40933)
+http.title:"Flowise" port:3000
+
+# vLLM (LLMjacking target)
+http.html:"vLLM" port:8000
+
+# Open WebUI
+http.title:"Open WebUI" port:3000
+
+# LiteLLM Proxy
+http.title:"LiteLLM" port:4000
+
+# DeepSeek-style ClickHouse exposure
+product:"ClickHouse" port:8123
+```
 ---
 
 ## 🌐 Censys Queries
@@ -292,6 +351,29 @@ services.port=8080 AND services.http.response.body:"weaviate"
 # MLOps
 services.port=5000 AND services.http.response.html_title:"MLflow"
 services.port=8888 AND services.http.response.html_title:"Jupyter"
+
+### MCP & New AI Infrastructure (v1.2.0)
+
+# MCP endpoints
+services.http.response.body:"Model Context Protocol" AND services.port=3000
+
+# Flowise (CVE-2026-40933)
+services.http.response.html_title:"Flowise" AND services.port=3000
+
+# vLLM (LLMjacking target)
+services.http.response.body:"vLLM" AND services.port=8000
+
+# nginx-ui MCP (CVE-2026-33032 — actively exploited)
+services.http.response.html_title:"Nginx UI" AND services.port=443
+
+# ClickHouse exposure (DeepSeek-style)
+services.port=8123 AND services.http.response.body:"ClickHouse"
+
+# Open WebUI
+services.http.response.html_title:"Open WebUI"
+
+# LiteLLM
+services.http.response.html_title:"LiteLLM"
 ```
 
 ---
@@ -330,7 +412,12 @@ services.port=8888 AND services.http.response.html_title:"Jupyter"
 | **Jupyter** | 8888 | ✅ Token (often disabled) | 🟡 High |
 | **LM Studio** | 1234 | ❌ None | 🟡 High |
 | **GPT4All** | 4891 | ❌ None | 🟡 High |
-
+| **Flowise** | 3000 | ❌ None | 🔴 Critical |
+| **LiteLLM Proxy** | 4000 | ❌ None | 🔴 Critical |
+| **Open WebUI** | 3000/8080 | ✅ Auth (default) | 🟡 High |
+| **nginx-ui** | 443/9000 | ✅ Auth (bypassable) | 🔴 Critical |
+| **ClickHouse** | 8123/9000 | ❌ None | 🔴 Critical |
+| **TGI (HuggingFace)** | 8080 | ❌ None | 🟡 High |
 ---
 
 ## 🔑 API Key Patterns
@@ -424,6 +511,11 @@ path:.cursor/mcp.json
 | Smithery Registry Breach | 2025 | Fly.io token → control of 3,000+ MCP servers |
 | mcp-remote CVE-2025-6514 | 2025 | Command injection in 437K+ installs |
 | Cursor IDE MCP Trust Issue | 2025 | Persistent RCE via shared repo configs (CVSS 7.2-8.8) |
+| MCP Systemic RCE (Ox Security) | Apr 2026 | 150M+ downloads, 200K servers, 10+ CVEs, 9/11 marketplaces poisoned |
+| nginx-ui MCPwn (CVE-2026-33032) | Mar 2026 | CVSS 9.8, actively exploited, full Nginx takeover in 2 requests |
+| Atlassian MCPwnfluence | Apr 2026 | CVE-2026-27825/27826 — RCE chain from LAN, no auth required |
+| MCP TypeScript SDK Data Leak | Apr 2026 | CVE-2026-25536 — cross-client data leak in shared McpServer instances |
+| Windsurf Zero-Click RCE | Apr 2026 | CVE-2026-30615 — zero-click prompt injection → local RCE via MCP |
 
 > 📖 Full timeline: [`threat-intel/THREAT_INTELLIGENCE.md`](threat-intel/THREAT_INTELLIGENCE.md)
 
@@ -442,6 +534,16 @@ path:.cursor/mcp.json
 - **MCP Supply Chain Timeline** — 10+ major breaches in MCP ecosystem
 - **175K Ollama Servers Exposed** — SentinelOne/Censys study across 130 countries
 - **AI-Assisted ICS Targeting** — 60+ Iranian groups using LLMs for critical infrastructure recon (Feb 2026)
+- **Claude Mythos Preview / Project Glasswing** — Anthropic's unreleased model autonomously discovered thousands of 0-days in major OS/browsers. Limited to ~50 organizations. CVE-2026-4747 (OpenBSD 27-year RCE).
+- **Claude Code Source Leak** — 59.8 MB source map published to npm (Mar 31, 2026). Critical 50-subcommand bypass vulnerability. Fake repos distributing Vidar/GhostSocks malware.
+- **MCP "Mother of All Supply Chains"** — Ox Security found architectural RCE in MCP SDKs: 150M+ downloads, 10+ CVEs, 9/11 marketplaces poisoned. Anthropic declined protocol fix.
+- **ChatGPT DNS Exfiltration** — Check Point discovered silent data leakage via DNS side channel in code execution sandbox. Patched Feb 20, 2026.
+- **CVE-2025-53773: Copilot Wormable RCE** — Prompt injection enables YOLO mode, wormable across repositories. Patched Aug 2025.
+- **OpenAI Codex CLI Command Injection** — Branch injection → lateral movement → codebase access. Patched Feb 2026.
+- **300K+ ChatGPT Credentials on Dark Web** — IBM X-Force 2026: AI chatbot credentials are emerging infostealer target.
+- **Ollama: 12,269 More Exposed** — LeakIX found additional exposed instances; maintainers continue rejecting auth PRs.
+- **nginx-ui MCPwn** — CVE-2026-33032 actively exploited. Full Nginx takeover in 2 HTTP requests.
+- **DeepSeek ClickHouse Exposure** — Wiz found 1M+ log entries with plaintext chats, API keys, backend details (Jan 2025).
 
 ---
 
@@ -460,6 +562,9 @@ path:.cursor/mcp.json
 | [**KeyLeak Detector**](https://github.com/Amal-David/keyleak-detector) | Web scanner for 200+ patterns incl. 15+ AI providers | Independent |
 | [**promptmap**](https://github.com/utkusen/promptmap) | ChatGPT dorks & prompt injection testing | Utku Şen |
 | [**Vulnerable MCP**](https://vulnerablemcp.info/) | MCP vulnerability database with CVEs and PoCs | Community |
+| [**MCPSafetyScanner**](https://github.com/johnhalloran321/mcpSafetyScanner) | MCP server security auditing tool | Academic (Leidos) |
+| [**Cisco AI Supply Chain Scanners**](https://blogs.cisco.com/ai/cisco-state-of-ai-security-2026-report) | Scanners for MCP, A2A, pickle files, agentic skill files | Cisco Talos |
+| [**DorkEye**](https://github.com/search?q=DorkEye+OSINT) | Automated Google Dorking with multi-agent analysis pipeline | Open Source |
 
 ---
 
@@ -467,7 +572,7 @@ path:.cursor/mcp.json
 
 > Full Sigma rules: [`detection-rules/SIGMA_RULES.md`](detection-rules/SIGMA_RULES.md)
 
-7 Sigma detection rules covering:
+12 Sigma detection rules covering:
 - External access to Ollama (port 11434)
 - AI API keys appearing in application logs
 - Unauthorized LLM API access without Bearer tokens
@@ -475,6 +580,11 @@ path:.cursor/mcp.json
 - Vector database unauthorized enumeration
 - LLMjacking — anomalous inference spikes (>500 requests/hour)
 - AI agent RCE via prompt injection (suspicious tool calls to bash/python_repl)
+- MCP STDIO arbitrary command execution (CVE-2026-30615/30624/30616/40933)
+- VS Code Copilot YOLO mode activation (CVE-2025-53773)
+- nginx-ui MCP endpoint unauthenticated access (CVE-2026-33032, actively exploited)
+- DNS-based data exfiltration from AI code execution sandboxes
+- Claude Code 50+ subcommand pipeline deny rule bypass
 
 ---
 
@@ -496,6 +606,16 @@ path:.cursor/mcp.json
 | Obsidian Security | 143K+ LLM chats (incl. Claude) on Archive.org | [Blog](https://www.obsidiansecurity.com/resource/143k-claude-copilot-chatgpt-chats-publicly-accessible-were-you-exposed) |
 | TechRadar | Claude Code 512K source lines leaked via npm | [Article](https://www.techradar.com/pro/security/anthropic-confirms-it-leaked-512-000-lines-of-claude-code-source-code-spilling-some-of-its-biggest-secrets) |
 | Penligent | Claude Code source map leak analysis | [Blog](https://www.penligent.ai/hackinglabs/claude-code-source-map-leak-what-was-exposed-and-what-it-means/) |
+| Ox Security | 150M+ MCP downloads affected by systemic RCE, 10+ CVEs, 9/11 marketplaces poisoned | [Blog](https://www.ox.security/blog/the-mother-of-all-ai-supply-chains-critical-systemic-vulnerability-at-the-core-of-the-mcp/) |
+| Anthropic Red Team | Claude Mythos: thousands of 0-days, CVE-2026-4747, sandbox escape | [red.anthropic.com](https://red.anthropic.com/2026/mythos-preview/) |
+| IBM X-Force | 300K+ ChatGPT creds on dark web, supply chain attacks 4x in 5 years | [Report](https://www.ibm.com/think/insights/more-2026-cyberthreat-trends) |
+| Check Point | ChatGPT DNS exfiltration — silent data leakage via side channel | [Blog](https://blog.checkpoint.com/research/when-ai-trust-breaks-the-chatgpt-data-leakage-flaw-that-redefined-ai-vendor-security-trust/) |
+| Zscaler ThreatLabz | Claude Code source leak + Vidar/GhostSocks malware lure | [Blog](https://www.zscaler.com/blogs/security-research/anthropic-claude-code-leak) |
+| Cisco AI | State of AI Security 2026 — MCP, A2A, agentic AI scanners | [Report](https://blogs.cisco.com/ai/cisco-state-of-ai-security-2026-report) |
+| LeakIX | 12,269 additional exposed Ollama instances, auth PR rejection critique | [Blog](https://blog.leakix.net/2026/02/ollama-exposed/) |
+| CSA | Time-to-exploit now under 20 hours (Mythos briefing) | [HelpNetSecurity](https://www.helpnetsecurity.com/2026/04/15/anthropic-claude-mythos-ai-vulnerability-discovery/) |
+| Wiz | Claude Mythos practical guidance — "Y2K moment" for cybersecurity | [Blog](https://www.wiz.io/blog/claude-mythos) |
+| Wiz | DeepSeek ClickHouse exposure — 1M+ log entries with plaintext chats | [Blog](https://www.wiz.io/blog/wiz-research-uncovers-exposed-deepseek-database-leak) |
 
 ### Standards
 
