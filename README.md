@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-  <code>175,000+ Ollama servers exposed</code> · <code>370,000+ Grok conversations indexed</code> · <code>AI credential leaks up 81% YoY</code>
+  <code>187,000+ Ollama servers exposed` · `370,000+ Grok conversations indexed` · `AI credential leaks up 81% YoY` · `150M+ MCP downloads affected by systemic RCE` · `300K+ ChatGPT creds on dark web</code>
 </p>
 
 ---
