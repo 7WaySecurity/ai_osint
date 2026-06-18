@@ -11,7 +11,7 @@
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="MIT"></a>
   <a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="https://img.shields.io/badge/Data-CC%20BY--SA%204.0-lightgrey.svg" alt="CC BY-SA 4.0"></a>
-  <img src="https://img.shields.io/badge/Updated-April%202026-blue.svg" alt="Updated">
+  <img src="https://img.shields.io/badge/Updated-June%202026-blue.svg" alt="Updated">
   <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs"></a>
   <img src="https://img.shields.io/github/stars/7WaySecurity/ai_osint?style=social" alt="Stars">
 </p>
@@ -46,6 +46,33 @@ This repository gives Red Team operators and OSINT professionals the exact queri
 
 ---
 
+## 🔑 The `KEYWORD` Convention — Read This First
+
+As of **v1.3.0**, every dork and query in this repository uses a **`KEYWORD` placeholder** in place of the secret-seeking value strings (passwords, tokens, credentials, etc.) that used to be hard-coded.
+
+**Replace `KEYWORD` with a term you are authorized to search for:**
+
+- your **company / brand / product name**
+- a **domain you own** (often via an extra `site:` / `hostname:` / `org:` filter)
+- an **internal project codename**
+- a scope identifier from an **authorized engagement**
+
+```
+# Examples of scoping KEYWORD to your own assets:
+site:grok.com/share "acme-corp"
+intitle:"MLflow" site:acme.com
+"OPENAI_API_KEY" path:*.env org:acme-corp
+"Ollama is running" port:11434 org:"Acme Inc"
+```
+
+**What stays:** service fingerprints (product titles, API paths, ports, env-var names like `OPENAI_API_KEY`, key prefixes like `sk-proj-`) are kept as-is — they identify the *service or format*, not a specific victim's secret.
+
+**Why:** documenting *that* a class of system is commonly misconfigured, and *how* to check your own exposure, is legitimate defensive and red-team work. Shipping copy-paste queries whose only function is to maximize the yield of *other people's* live secrets is not. The `KEYWORD` convention keeps every technique here useful for authorized testing without being a turnkey harvesting kit.
+
+If a hit surfaces a **third party's** secret, that is not your finding to act on — [report it responsibly](#-disclaimer) and move on.
+
+---
+
 ## 📋 Table of Contents
 
 | Section | What You'll Find |
@@ -72,87 +99,74 @@ This repository gives Red Team operators and OSINT professionals the exact queri
 
 ```
 # Grok (xAI) — 370K+ conversations indexed, NO opt-out for indexing
-site:grok.com/share "password"
-site:grok.com/share "API key"
-site:grok.com/share "secret"
-site:grok.com/share "token"
-site:grok.com/share "credentials"
-site:grok.com/share "keyword"
+site:grok.com/share "KEYWORD"
 
 # ChatGPT — Feature removed Aug 2025, cached results diminishing
 # Try on DuckDuckGo which continued indexing after Google stopped
-site:chatgpt.com/share "API key"
-site:chatgpt.com/share "sk-proj"
-site:chatgpt.com/share "password"
-site:chatgpt.com/share "AWS_SECRET"
+site:chatgpt.com/share "KEYWORD"
 
 # Perplexity AI
-site:perplexity.ai/search "API key"
-site:perplexity.ai/search "password"
+site:perplexity.ai/search "KEYWORD"
 
 # Claude (Anthropic) — ~600 convos indexed by Google, 143K+ on Archive.org
 # 🔥 Original dork by 7WaySecurity
-site:claude.ai "public/artifacts"
-site:claude.ai/share "API key"
-site:claude.ai/share "sk-ant"
-site:claude.ai/share "password"
-site:claude.ai/share "AWS"
-site:claude.ai/share ".env"
-site:web.archive.org "claude.ai/share"
+site:claude.ai "public/artifacts" "KEYWORD"
+site:claude.ai/share "KEYWORD"
+site:web.archive.org "claude.ai/share" "KEYWORD"
 
 # HuggingFace Spaces — keys hardcoded in public Git repos
-site:huggingface.co/spaces "sk-proj"
-site:huggingface.co/spaces "OPENAI_API_KEY"
-site:huggingface.co/spaces "os.environ"
-site:huggingface.co/spaces "st.secrets"
+site:huggingface.co/spaces "KEYWORD"
+site:huggingface.co/spaces "OPENAI_API_KEY" "KEYWORD"
+site:huggingface.co/spaces "os.environ" "KEYWORD"
+site:huggingface.co/spaces "st.secrets" "KEYWORD"
 ```
 
 ### Exposed AI Dashboards
 
 ```
-intitle:"MLflow" inurl:"/mlflow"
-intitle:"Label Studio" inurl:"/projects"
-intitle:"Jupyter Notebook" inurl:"/tree" -"Login"
-intitle:"Kubeflow" inurl:"/pipeline"
-intitle:"Airflow - DAGs"
-intitle:"Gradio" inurl:":7860"
-intitle:"Streamlit" inurl:":8501"
-intitle:"Open WebUI" "ollama"
-intitle:"Qdrant Dashboard"
-intitle:"ComfyUI"
-intitle:"Stable Diffusion"
-intitle:"LiteLLM" "proxy"
+intitle:"MLflow" inurl:"/mlflow" "KEYWORD"
+intitle:"Label Studio" inurl:"/projects" "KEYWORD"
+intitle:"Jupyter Notebook" inurl:"/tree" -"Login" "KEYWORD"
+intitle:"Kubeflow" inurl:"/pipeline" "KEYWORD"
+intitle:"Airflow - DAGs" "KEYWORD"
+intitle:"Gradio" inurl:":7860" "KEYWORD"
+intitle:"Streamlit" inurl:":8501" "KEYWORD"
+intitle:"Open WebUI" "ollama" "KEYWORD"
+intitle:"Qdrant Dashboard" "KEYWORD"
+intitle:"ComfyUI" "KEYWORD"
+intitle:"Stable Diffusion" "KEYWORD"
+intitle:"LiteLLM" "proxy" "KEYWORD"
 ```
 
 ### AI Config & Credential Files
 
 ```
-filetype:env "OPENAI_API_KEY"
-filetype:env "ANTHROPIC_API_KEY"
-filetype:env "HUGGINGFACE_TOKEN"
-filetype:env "GROQ_API_KEY"
-filetype:env "PINECONE_API_KEY"
-filetype:env "WANDB_API_KEY"
-filetype:env "DEEPSEEK_API_KEY"
-filetype:env "OPENROUTER_API_KEY"
-filetype:yaml "openai" "api_key"
-filetype:json "anthropic" "api_key"
+filetype:env "OPENAI_API_KEY" "KEYWORD"
+filetype:env "ANTHROPIC_API_KEY" "KEYWORD"
+filetype:env "HUGGINGFACE_TOKEN" "KEYWORD"
+filetype:env "GROQ_API_KEY" "KEYWORD"
+filetype:env "PINECONE_API_KEY" "KEYWORD"
+filetype:env "WANDB_API_KEY" "KEYWORD"
+filetype:env "DEEPSEEK_API_KEY" "KEYWORD"
+filetype:env "OPENROUTER_API_KEY" "KEYWORD"
+filetype:yaml "openai" "api_key" "KEYWORD"
+filetype:json "anthropic" "api_key" "KEYWORD"
 ```
 
 ### MCP Server Config Exposure (v1.2.0)
 
 ```
 # MCP server configs with embedded secrets (systemic RCE — Ox Security, April 2026)
-site:github.com "mcpServers" "args" filetype:json
-site:github.com "mcp.config" "apiKey"
-site:github.com ".cursor" "mcpServers" filetype:json
-site:github.com "windsurf" "mcp" "config" filetype:json
+site:github.com "mcpServers" "args" filetype:json "KEYWORD"
+site:github.com "mcp.config" "apiKey" "KEYWORD"
+site:github.com ".cursor" "mcpServers" filetype:json "KEYWORD"
+site:github.com "windsurf" "mcp" "config" filetype:json "KEYWORD"
 
 # Claude Code leak artifacts
-site:github.com "claude-code" "leaked" "source"
+site:github.com "claude-code" "leaked" "source" "KEYWORD"
 
 # VS Code YOLO mode (CVE-2025-53773)
-site:github.com "chat.tools.autoApprove" "true" filetype:json
+site:github.com "chat.tools.autoApprove" "true" filetype:json "KEYWORD"
 ```
 ---
 
@@ -166,68 +180,68 @@ site:github.com "chat.tools.autoApprove" "true" filetype:json
 
 ```
 # OpenAI (project keys — current format since April 2024)
-"sk-proj-" path:*.env
-"sk-proj-" path:*.py
-"OPENAI_API_KEY" path:*.env NOT "your_key" NOT "example"
+"sk-proj-" path:*.env "KEYWORD"
+"sk-proj-" path:*.py "KEYWORD"
+"OPENAI_API_KEY" path:*.env NOT "your_key" NOT "example" "KEYWORD"
 
 # Anthropic
-"sk-ant-api03" path:*.env
-"ANTHROPIC_API_KEY" path:*.env
+"sk-ant-api03" path:*.env "KEYWORD"
+"ANTHROPIC_API_KEY" path:*.env "KEYWORD"
 
 # Google AI / Gemini
-"AIzaSy" path:*.env "generativelanguage"
-"GOOGLE_API_KEY" path:*.env "gemini"
+"AIzaSy" path:*.env "generativelanguage" "KEYWORD"
+"GOOGLE_API_KEY" path:*.env "gemini" "KEYWORD"
 
 # HuggingFace
-"hf_" path:*.env
+"hf_" path:*.env "KEYWORD"
 "HF_TOKEN" path:*.env
 
 # Groq
-"gsk_" path:*.env
-"GROQ_API_KEY" path:*.env
+"gsk_" path:*.env "KEYWORD"
+"GROQ_API_KEY" path:*.env "KEYWORD"
 
 # Replicate
-"r8_" path:*.env
-"REPLICATE_API_TOKEN" path:*.env
+"r8_" path:*.env "KEYWORD"
+"REPLICATE_API_TOKEN" path:*.env "KEYWORD"
 
 # Vector DBs & MLOps
-"PINECONE_API_KEY" path:*.env
-"QDRANT_API_KEY" path:*.env
-"WANDB_API_KEY" path:*.env
+"PINECONE_API_KEY" path:*.env "KEYWORD"
+"QDRANT_API_KEY" path:*.env "KEYWORD"
+"WANDB_API_KEY" path:*.env "KEYWORD"
 ```
 
 ### MCP & Agent Config Leaks
 
 ```
-path:mcp.json "api_key"
-path:mcp.json "token"
-path:.cursor/mcp.json
-"mcpServers" path:*.json "apiKey"
-"mcpServers" path:*.json "OPENAI_API_KEY"
+path:mcp.json "api_key" "KEYWORD"
+path:mcp.json "KEYWORD"
+path:.cursor/mcp.json "KEYWORD"
+"mcpServers" path:*.json "apiKey" "KEYWORD"
+"mcpServers" path:*.json "OPENAI_API_KEY" "KEYWORD"
 ```
 
 ### System Prompts & Training Data
 
 ```
-"system_prompt" path:*.py "you are"
-"SYSTEM_PROMPT" path:*.env
-path:prompts.yaml "system"
-path:train.jsonl "prompt" "completion"
-path:dataset.jsonl "instruction" "output"
+"system_prompt" path:*.py "you are" "KEYWORD"
+"SYSTEM_PROMPT" path:*.env "KEYWORD"
+path:prompts.yaml "system" "KEYWORD"
+path:train.jsonl "prompt" "completion" "KEYWORD"
+path:dataset.jsonl "instruction" "output" "KEYWORD"
 ```
 
 ### MCP & AI IDE Config Exploitation (v1.2.0)
 
 ```
 # MCP STDIO configs (systemic RCE — 10+ CVEs)
-path:*.json "mcpServers" "command" "args"
-path:.vscode/settings.json "chat.tools.autoApprove" "true"
+path:*.json "mcpServers" "command" "args" "KEYWORD"
+path:.vscode/settings.json "chat.tools.autoApprove" "true" "KEYWORD"
 
 # Claude Code attack vectors
 "CLAUDE.md" "permission" "allow"
 
 # DeepSeek keys
-path:*.env "DEEPSEEK_API_KEY"
+path:*.env "DEEPSEEK_API_KEY" "KEYWORD"
 "DEEPSEEK_API_KEY" NOT "your_key" NOT "example"
 ```
 ---
@@ -240,19 +254,19 @@ path:*.env "DEEPSEEK_API_KEY"
 
 ```
 # Ollama — 240,000+ exposed instances worldwide
-port:11434 product:"Ollama"
-port:11434 http.html:"Ollama"
-port:11434 "api/tags"
+port:11434 product:"Ollama" "KEYWORD"
+port:11434 http.html:"Ollama" "KEYWORD"
+port:11434 "api/tags" "KEYWORD"
 
 # vLLM / OpenAI-compatible
-port:8000 "openai" "model"
-http.title:"FastAPI" port:8000 "/v1/models"
+port:8000 "openai" "model" "KEYWORD"
+http.title:"FastAPI" port:8000 "/v1/models" "KEYWORD"
 
 # LM Studio
-port:1234 "/v1/models"
+port:1234 "/v1/models" "KEYWORD"
 
 # llama.cpp
-port:8080 "llama" "completion"
+port:8080 "llama" "completion" "KEYWORD"
 ```
 
 ### AI Agent Gateways — CRITICAL
@@ -260,70 +274,70 @@ port:8080 "llama" "completion"
 ```
 # OpenClaw/Clawdbot — 4,000+ on Shodan, many with zero auth
 # Enables RCE via prompt injection, API key theft, reverse shells
-http.title:"Clawdbot Control" port:18789
-http.title:"OpenClaw" port:18789
-port:18789 "api/v1/status"
-port:18789 "auth_mode"
+http.title:"Clawdbot Control" port:18789 "KEYWORD"
+http.title:"OpenClaw" port:18789 "KEYWORD"
+port:18789 "api/v1/status" "KEYWORD"
+port:18789 "auth_mode" "KEYWORD"
 ```
 
 ### Gradio & Streamlit Apps
 
 ```
-http.title:"Gradio" port:7860
-http.title:"Streamlit" port:8501
-http.title:"Stable Diffusion" port:7860
-http.title:"ComfyUI"
+http.title:"Gradio" port:7860 "KEYWORD"
+http.title:"Streamlit" port:8501 "KEYWORD"
+http.title:"Stable Diffusion" port:7860 "KEYWORD"
+http.title:"ComfyUI" "KEYWORD"
 ```
 
 ### Vector Databases
 
 ```
 # Qdrant — NO auth by default
-port:6333 "qdrant"
-port:6333 "/collections"
+port:6333 "qdrant" "KEYWORD"
+port:6333 "/collections" "KEYWORD"
 
 # Weaviate
-port:8080 "weaviate"
+port:8080 "weaviate" "KEYWORD"
 
 # Milvus
-port:19530 "milvus"
+port:19530 "milvus" "KEYWORD"
 ```
 
 ### MLOps & Notebooks
 
 ```
 # MLflow — CVE-2026-0545 (CVSS 9.1) RCE, no auth by default
-http.title:"MLflow" port:5000
+http.title:"MLflow" port:5000 "KEYWORD"
 
 # Jupyter — ~10,000+ on Shodan, targeted by botnets
-http.title:"Jupyter Notebook" port:8888 -"Login"
-http.title:"JupyterLab" port:8888
+http.title:"Jupyter Notebook" port:8888 -"Login" "KEYWORD"
+http.title:"JupyterLab" port:8888 "KEYWORD"
 
 # TensorBoard
-http.title:"TensorBoard" port:6006
+http.title:"TensorBoard" port:6006 "KEYWORD"
 ```
 
 ### MCP & AI Agent Gateways (v1.2.0)
 
 ```
 # MCP endpoints (systemic RCE — Ox Security)
-http.html:"mcp" "tools" port:3000
-http.html:"Model Context Protocol" port:8080
+http.html:"mcp" "tools" port:3000 "KEYWORD"
+http.html:"Model Context Protocol" port:8080 "KEYWORD"
 
 # nginx-ui MCP (CVE-2026-33032 — actively exploited, CVSS 9.8)
-http.title:"Nginx UI" port:443
+http.title:"Nginx UI" port:443 "KEYWORD"
 
 # Flowise (CVE-2026-40933)
-http.title:"Flowise" port:3000
+http.title:"Flowise" port:3000 "KEYWORD"
 
 # vLLM (LLMjacking target)
-http.html:"vLLM" port:8000
+http.html:"vLLM" port:8000 "KEYWORD"
 
 # Open WebUI
-http.title:"Open WebUI" port:3000
+http.title:"Open WebUI" port:3000 "KEYWORD"
 
 # LiteLLM Proxy
-http.title:"LiteLLM" port:4000
+http.title:"LiteLLM" port:4000 "KEYWORD"
 
 # DeepSeek-style ClickHouse exposure
 product:"ClickHouse" port:8123
@@ -336,44 +350,44 @@ product:"ClickHouse" port:8123
 
 ```
 # Ollama (Censys found 25%+ on non-default ports)
-services.port=11434 AND services.http.response.body:"Ollama"
+services.port=11434 AND services.http.response.body:"Ollama" "KEYWORD"
 
 # Gradio
-services.port=7860 AND services.http.response.html_title:"Gradio"
+services.port=7860 AND services.http.response.html_title:"Gradio" "KEYWORD"
 
 # OpenClaw
-services.port=18789 AND services.http.response.body:"Clawdbot"
+services.port=18789 AND services.http.response.body:"Clawdbot" "KEYWORD"
 
 # Vector DBs
-services.port=6333 AND services.http.response.body:"qdrant"
-services.port=8080 AND services.http.response.body:"weaviate"
+services.port=6333 AND services.http.response.body:"qdrant" "KEYWORD"
+services.port=8080 AND services.http.response.body:"weaviate" "KEYWORD"
 
 # MLOps
-services.port=5000 AND services.http.response.html_title:"MLflow"
-services.port=8888 AND services.http.response.html_title:"Jupyter"
+services.port=5000 AND services.http.response.html_title:"MLflow" "KEYWORD"
+services.port=8888 AND services.http.response.html_title:"Jupyter" "KEYWORD"
 
 ### MCP & New AI Infrastructure (v1.2.0)
 
 # MCP endpoints
-services.http.response.body:"Model Context Protocol" AND services.port=3000
+services.http.response.body:"Model Context Protocol" AND services.port=3000 "KEYWORD"
 
 # Flowise (CVE-2026-40933)
-services.http.response.html_title:"Flowise" AND services.port=3000
+services.http.response.html_title:"Flowise" AND services.port=3000 "KEYWORD"
 
 # vLLM (LLMjacking target)
-services.http.response.body:"vLLM" AND services.port=8000
+services.http.response.body:"vLLM" AND services.port=8000 "KEYWORD"
 
 # nginx-ui MCP (CVE-2026-33032 — actively exploited)
-services.http.response.html_title:"Nginx UI" AND services.port=443
+services.http.response.html_title:"Nginx UI" AND services.port=443 "KEYWORD"
 
 # ClickHouse exposure (DeepSeek-style)
-services.port=8123 AND services.http.response.body:"ClickHouse"
+services.port=8123 AND services.http.response.body:"ClickHouse" "KEYWORD"
 
 # Open WebUI
-services.http.response.html_title:"Open WebUI"
+services.http.response.html_title:"Open WebUI" "KEYWORD"
 
 # LiteLLM
-services.http.response.html_title:"LiteLLM"
+services.http.response.html_title:"LiteLLM" "KEYWORD"
 ```
 
 ---
@@ -493,13 +507,13 @@ MCP servers connect AI models to shell access, file systems, databases, and APIs
 
 ```
 # Shodan
-port:18789 "api/v1"
-http.title:"Clawdbot" OR http.title:"OpenClaw"
+port:18789 "api/v1" "KEYWORD"
+http.title:"Clawdbot" OR http.title:"OpenClaw" "KEYWORD"
 
 # GitHub
-path:mcp.json "apiKey"
-path:.cursor/mcp.json
-"mcpServers" path:*.json "token"
+path:mcp.json "apiKey" "KEYWORD"
+path:.cursor/mcp.json "KEYWORD"
+"mcpServers" path:*.json "KEYWORD"
 ```
 
 ### Key Incidents
@@ -652,4 +666,4 @@ Code: [MIT](LICENSE) · Data & Documentation: [CC BY-SA 4.0](https://creativecom
 
 ---
 
-<p align="center"><b>Maintained by <a href="https://7waysecurity.co">7WaySecurity</a></b> · Last updated April 2026</p>
+<p align="center"><b>Maintained by <a href="https://7waysecurity.co">7WaySecurity</a></b> · Last updated June 2026 · v1.3.0</p>

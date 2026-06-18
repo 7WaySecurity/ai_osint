@@ -1,61 +1,39 @@
 # Google Dorks for AI/ML OSINT
 
-> ⚠️ **Status notes** indicate current effectiveness based on April 2026 verification.
+> 🔑 **`KEYWORD` convention (v1.3.0):** secret-seeking value strings have been
+> replaced with a `"KEYWORD"` placeholder. Replace `KEYWORD` with a term you are
+> **authorized** to search for — your own brand, an owned domain, an internal
+> project name, or an engagement scope. Service fingerprints (titles, paths,
+> ports, env-var names, key prefixes) are kept as-is because they identify the
+> *service*, not a secret. See the repo README for the rationale.
+>
+> ⚠️ **Status notes** reflect **June 2026** verification.
 
 ---
 
 ## AI Chat Platforms — Exposed Conversations
 
-### Grok (xAI) — 🟢 HIGHLY EFFECTIVE
-> 370,000+ conversations indexed. No opt-out for search engine indexing. xAI treats this as expected behavior.
+### Grok (xAI) — 🟢 HIGHLY EFFECTIVE (verified Jun 2026)
+> 370,000+ conversations indexed; historically no opt-out for indexing. Confirmed still broadly indexed in June 2026. Scope with your own brand/domain.
 
 ```
-site:grok.com/share "password"
-site:grok.com/share "API key"
-site:grok.com/share "secret"
-site:grok.com/share "token"
-site:grok.com/share "credentials"
-site:grok.com/share "sk-proj"
-site:grok.com/share "AWS"
-site:grok.com/share "database"
-site:grok.com/share "mongodb://"
-site:grok.com/share "postgres://"
-site:grok.com/share "private key"
-site:grok.com/share "admin"
+site:grok.com/share "KEYWORD"
+site:grok.com/share intext:"KEYWORD"
+site:grok.com/share "KEYWORD" "internal"
 ```
 
-### ChatGPT (OpenAI) — 🟡 DEGRADED
-> OpenAI removed discoverability feature Aug 1, 2025. Google de-indexed most results. **Try DuckDuckGo** which continued surfacing content after Google stopped.
+### ChatGPT (OpenAI) — 🟡 DEGRADED (re-verified Jun 2026)
+> Discoverability feature removed Aug 1, 2025; OpenAI is de-indexing shares with Google. **Cached and third-party-archived copies persist** and spot checks still return occasional live results — degraded, not dead. Bing/DuckDuckGo sometimes retain more than Google.
 
 ```
-site:chatgpt.com/share "API key"
-site:chatgpt.com/share "sk-proj"
-site:chatgpt.com/share "sk-ant"
-site:chatgpt.com/share "password"
-site:chatgpt.com/share "secret"
-site:chatgpt.com/share "token"
-site:chatgpt.com/share "AWS_SECRET"
-site:chatgpt.com/share "connection string"
-site:chatgpt.com/share ".env"
-site:chatgpt.com/share "private key"
-site:chatgpt.com/share "ssh-rsa"
-site:chatgpt.com/share "jdbc:"
-site:chatgpt.com/share "mongodb://"
-site:chatgpt.com/share "stripe" "sk_live"
-site:chatgpt.com/share "firebase"
-site:chatgpt.com/share "supabase"
-site:chatgpt.com/share "internal" "architecture"
-site:chatgpt.com/share "vpn" "credentials"
+site:chatgpt.com/share "KEYWORD"
+site:chatgpt.com/share intext:"KEYWORD"
 ```
 
 ### Perplexity AI — 🟢 ACTIVE
 
 ```
-site:perplexity.ai/search "API key"
-site:perplexity.ai/search "password"
-site:perplexity.ai/search "sk-proj"
-site:perplexity.ai/search "credentials"
-site:perplexity.ai/search "internal"
+site:perplexity.ai/search "KEYWORD"
 ```
 
 ### Claude (Anthropic) — 🟢 ACTIVE
@@ -64,61 +42,39 @@ site:perplexity.ai/search "internal"
 ```
 # Published Artifacts — publicly accessible apps, tools, code
 # 🔥 Original dork by 7WaySecurity
-site:claude.ai "public/artifacts"
+site:claude.ai "public/artifacts" "KEYWORD"
 
-# Shared conversations
-site:claude.ai/share "API key"
-site:claude.ai/share "password"
-site:claude.ai/share "secret"
-site:claude.ai/share "token"
-site:claude.ai/share "sk-proj"
-site:claude.ai/share "sk-ant"
-site:claude.ai/share "AWS"
-site:claude.ai/share "credentials"
-site:claude.ai/share "database"
-site:claude.ai/share "private key"
-site:claude.ai/share ".env"
-site:claude.ai/share "connection string"
-site:claude.ai/share "mongodb://"
-site:claude.ai/share "postgres://"
-site:claude.ai/share "firebase"
-site:claude.ai/share "supabase"
-site:claude.ai/share "internal" "architecture"
+# Shared conversations — scope to your own brand/domain
+site:claude.ai/share "KEYWORD"
 
 # Artifact catalog — public directory of published artifacts
-site:claude.ai/catalog
+site:claude.ai/catalog "KEYWORD"
 
-# Archive.org Wayback Machine — 143K+ LLM conversations archived
-# Enumerate via CDX API:
+# Archive.org Wayback Machine — enumerate captures for YOUR OWN domain
 # curl "https://web.archive.org/cdx/search/cdx?url=claude.ai/share/*&output=json&limit=10000"
-site:web.archive.org "claude.ai/share"
+site:web.archive.org "claude.ai/share" "KEYWORD"
 ```
 
 ---
 
-## HuggingFace — 🟢 ACTIVE
-> Spaces source code is in public Git repos. Despite Secrets mechanism, developers hardcode keys in app.py.
+## HuggingFace — 🟢 ACTIVE (verified Jun 2026)
+> Spaces source code is in public Git repos. Despite the Secrets mechanism, developers sometimes hardcode keys in app.py. Scope with your own org/project as `KEYWORD`.
 
 ```
-site:huggingface.co/spaces "sk-proj"
-site:huggingface.co/spaces "OPENAI_API_KEY"
-site:huggingface.co/spaces "ANTHROPIC_API_KEY"
-site:huggingface.co/spaces "password"
-site:huggingface.co/spaces "secret"
-site:huggingface.co/spaces "token"
-site:huggingface.co/spaces "os.environ"
-site:huggingface.co/spaces "st.secrets"
-site:huggingface.co/spaces "API_KEY"
-site:huggingface.co "AWS_ACCESS_KEY_ID"
-site:huggingface.co ".env" "KEY"
-site:huggingface.co "database_url"
-site:huggingface.co "training data" "internal"
-site:huggingface.co "fine-tuned" "proprietary"
+site:huggingface.co/spaces "OPENAI_API_KEY" "KEYWORD"
+site:huggingface.co/spaces "ANTHROPIC_API_KEY" "KEYWORD"
+site:huggingface.co/spaces "os.environ" "KEYWORD"
+site:huggingface.co/spaces "st.secrets" "KEYWORD"
+site:huggingface.co/spaces "API_KEY" "KEYWORD"
+site:huggingface.co ".env" "KEYWORD"
+site:huggingface.co "training data" "KEYWORD"
+site:huggingface.co "fine-tuned" "KEYWORD"
 ```
 
 ---
 
 ## Exposed AI Dashboards — 🟢 ACTIVE
+> Product titles/ports are fingerprints and stay. Add `site:yourdomain.com` (or set `KEYWORD` via an extra term) to scope to your own assets.
 
 ```
 intitle:"MLflow" inurl:"/mlflow"
@@ -141,7 +97,7 @@ intitle:"Fooocus"
 intitle:"Qdrant Dashboard"
 ```
 
-> ⚠️ `intitle:"Stable Diffusion" inurl:":7860"` — Limited effectiveness. Google rarely indexes URLs with non-standard ports. Use Shodan instead: `http.title:"Stable Diffusion" port:7860`
+> ⚠️ `intitle:"Stable Diffusion" inurl:":7860"` — Limited effectiveness. Google rarely indexes URLs with non-standard ports. Use Shodan instead: `http.title:"Stable Diffusion" port:7860`.
 
 ---
 
@@ -158,28 +114,29 @@ inurl:"/v1/models" inurl:":1234"
 ---
 
 ## AI Config Files — 🟢 ACTIVE
+> Env-var names are file fingerprints and stay. `KEYWORD` scopes to your own org/domain so this stays a self-audit, not a third-party dragnet.
 
 ```
-filetype:env "OPENAI_API_KEY"
-filetype:env "ANTHROPIC_API_KEY"
-filetype:env "HUGGINGFACE_TOKEN"
-filetype:env "HF_TOKEN"
-filetype:env "REPLICATE_API_TOKEN"
-filetype:env "COHERE_API_KEY"
-filetype:env "MISTRAL_API_KEY"
-filetype:env "GROQ_API_KEY"
-filetype:env "ELEVENLABS_API_KEY"
-filetype:env "STABILITY_API_KEY"
-filetype:env "DEEPSEEK_API_KEY"
-filetype:env "TOGETHER_API_KEY"
-filetype:env "PINECONE_API_KEY"
-filetype:env "QDRANT_API_KEY"
-filetype:env "WANDB_API_KEY"
-filetype:env "OPENROUTER_API_KEY"
-filetype:yaml "openai" "api_key"
-filetype:json "openai" "api_key"
-filetype:toml "openai" "api_key"
-filetype:json "mcpServers" "apiKey"
+filetype:env "OPENAI_API_KEY" "KEYWORD"
+filetype:env "ANTHROPIC_API_KEY" "KEYWORD"
+filetype:env "HUGGINGFACE_TOKEN" "KEYWORD"
+filetype:env "HF_TOKEN" "KEYWORD"
+filetype:env "REPLICATE_API_TOKEN" "KEYWORD"
+filetype:env "COHERE_API_KEY" "KEYWORD"
+filetype:env "MISTRAL_API_KEY" "KEYWORD"
+filetype:env "GROQ_API_KEY" "KEYWORD"
+filetype:env "ELEVENLABS_API_KEY" "KEYWORD"
+filetype:env "STABILITY_API_KEY" "KEYWORD"
+filetype:env "DEEPSEEK_API_KEY" "KEYWORD"
+filetype:env "TOGETHER_API_KEY" "KEYWORD"
+filetype:env "PINECONE_API_KEY" "KEYWORD"
+filetype:env "QDRANT_API_KEY" "KEYWORD"
+filetype:env "WANDB_API_KEY" "KEYWORD"
+filetype:env "OPENROUTER_API_KEY" "KEYWORD"
+filetype:yaml "openai" "api_key" "KEYWORD"
+filetype:json "openai" "api_key" "KEYWORD"
+filetype:toml "openai" "api_key" "KEYWORD"
+filetype:json "mcpServers" "apiKey" "KEYWORD"
 ```
 
 ---
@@ -190,15 +147,15 @@ filetype:json "mcpServers" "apiKey"
 
 ```
 # Works for text-based formats
-filetype:jsonl "prompt" "completion"
-filetype:jsonl "instruction" "output"
-filetype:csv "prompt" "response"
-filetype:parquet "train"
+filetype:jsonl "prompt" "completion" "KEYWORD"
+filetype:jsonl "instruction" "output" "KEYWORD"
+filetype:csv "prompt" "response" "KEYWORD"
+filetype:parquet "train" "KEYWORD"
 
 # Open directory listings for model files
-intitle:"index of" .gguf
-intitle:"index of" .safetensors
-intitle:"index of" "pytorch_model"
+intitle:"index of" .gguf "KEYWORD"
+intitle:"index of" .safetensors "KEYWORD"
+intitle:"index of" "pytorch_model" "KEYWORD"
 ```
 
 ---
@@ -206,13 +163,13 @@ intitle:"index of" "pytorch_model"
 ## Cloud-Hosted AI — 🟢 ACTIVE
 
 ```
-site:*.amazonaws.com "jupyter"
-site:*.amazonaws.com "sagemaker"
-site:*.fly.dev "ollama"
-site:*.fly.dev "mcp"
-site:*.railway.app "ollama"
-site:*.render.com "gradio"
-site:*.hf.space
+site:*.amazonaws.com "jupyter" "KEYWORD"
+site:*.amazonaws.com "sagemaker" "KEYWORD"
+site:*.fly.dev "ollama" "KEYWORD"
+site:*.fly.dev "mcp" "KEYWORD"
+site:*.railway.app "ollama" "KEYWORD"
+site:*.render.com "gradio" "KEYWORD"
+site:*.hf.space "KEYWORD"
 ```
 
 ---
@@ -222,16 +179,15 @@ site:*.hf.space
 > MCP supply chain now constitutes 150M+ downloads. Ox Security found systemic RCE across MCP SDKs (April 2026).
 
 ```
-# MCP server configs with embedded secrets
-site:github.com "mcp_servers" "command" filetype:json
-site:github.com "mcpServers" "args" filetype:json
-site:github.com path:*.json "stdio" "mcp" "command"
-site:github.com "mcp.config" "apiKey"
-site:github.com ".cursor" "mcpServers" filetype:json
+site:github.com "mcp_servers" "command" filetype:json "KEYWORD"
+site:github.com "mcpServers" "args" filetype:json "KEYWORD"
+site:github.com path:*.json "stdio" "mcp" "command" "KEYWORD"
+site:github.com "mcp.config" "apiKey" "KEYWORD"
+site:github.com ".cursor" "mcpServers" filetype:json "KEYWORD"
 
 # Windsurf IDE configs (CVE-2026-30615 — zero-click RCE)
-site:github.com "windsurf" "mcp" "config" filetype:json
-site:github.com ".windsurf" "mcpServers"
+site:github.com "windsurf" "mcp" "config" filetype:json "KEYWORD"
+site:github.com ".windsurf" "mcpServers" "KEYWORD"
 ```
 
 ---
@@ -256,21 +212,21 @@ site:github.com "claude code" "unlocked" "enterprise"
 
 ```
 # Agent Zero configs (CVE-2026-30624 — RCE via MCP config)
-site:github.com "agent-zero" "mcp" filetype:json
+site:github.com "agent-zero" "mcp" filetype:json "KEYWORD"
 
 # Flowise configs (CVE-2026-40933 — RCE via MCP adapters)
-site:github.com "flowise" "mcp" "stdio"
+site:github.com "flowise" "mcp" "stdio" "KEYWORD"
 
-# Claude API keys in various formats
-site:github.com "CLAUDE_API_KEY" filetype:env
-site:github.com "ANTHROPIC_API_KEY" filetype:yaml
+# Provider keys in various formats — scope with KEYWORD to your org
+site:github.com "CLAUDE_API_KEY" filetype:env "KEYWORD"
+site:github.com "ANTHROPIC_API_KEY" filetype:yaml "KEYWORD"
 
 # Codex (OpenAI) tokens
-site:github.com "codex" "GITHUB_TOKEN" filetype:env
+site:github.com "codex" "GITHUB_TOKEN" filetype:env "KEYWORD"
 
 # DeepSeek exposure
-site:github.com "deepseek" "api_key" OR "DEEPSEEK_API_KEY"
-site:github.com "deepseek" filetype:env
+site:github.com "deepseek" "DEEPSEEK_API_KEY" "KEYWORD"
+site:github.com "deepseek" filetype:env "KEYWORD"
 ```
 
 ---
@@ -281,8 +237,8 @@ site:github.com "deepseek" filetype:env
 
 ```
 # VS Code autoApprove configs
-site:github.com "chat.tools.autoApprove" "true" filetype:json
-site:github.com "settings.json" "autoApprove" "copilot"
+site:github.com "chat.tools.autoApprove" "true" filetype:json "KEYWORD"
+site:github.com "settings.json" "autoApprove" "copilot" "KEYWORD"
 ```
 
 ---
@@ -292,9 +248,9 @@ site:github.com "settings.json" "autoApprove" "copilot"
 > Wiz found a publicly accessible ClickHouse database with 1M+ log entries, plaintext chat histories, and API keys (Jan 2025).
 
 ```
-site:github.com "deepseek" "api_key" OR "DEEPSEEK_API_KEY"
-site:github.com "deepseek" filetype:env
-site:github.com "deepseek" "ClickHouse" "oauth2callback"
+site:github.com "deepseek" "DEEPSEEK_API_KEY" "KEYWORD"
+site:github.com "deepseek" filetype:env "KEYWORD"
+site:github.com "deepseek" "ClickHouse" "oauth2callback" "KEYWORD"
 ```
 
 ---
@@ -304,7 +260,7 @@ site:github.com "deepseek" "ClickHouse" "oauth2callback"
 > Claude Mythos Preview autonomously found thousands of 0-days including a 27-year-old OpenBSD RCE.
 
 ```
-site:github.com "mythos" "vulnerability" "exploit"
-site:github.com "glasswing" "anthropic"
-site:github.com "mcpSafetyScanner"
+site:github.com "mythos" "vulnerability" "exploit" "KEYWORD"
+site:github.com "glasswing" "anthropic" "KEYWORD"
+site:github.com "mcpSafetyScanner" "KEYWORD"
 ```

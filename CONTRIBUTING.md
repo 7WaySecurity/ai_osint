@@ -3,7 +3,10 @@
 PRs welcome! Guidelines:
 
 ## Adding Dorks/Queries
-- **Verify it works** before submitting
+- **Use the `KEYWORD` convention (mandatory, since v1.3.0).** Secret-seeking value strings must be a `"KEYWORD"` placeholder, or the query must carry a native scope filter (`org:`, `site:`, `hostname:`, `net:`). Service fingerprints (titles, paths, ports, env-var names, key prefixes) stay as-is.
+  - ✅ `site:grok.com/share "KEYWORD"` · `"OPENAI_API_KEY" path:*.env org:YOUR_ORG`
+  - ❌ `site:grok.com/share "password"` (unscoped credential dragnet — will be closed)
+- **Verify it works** before submitting; state the date and engine.
 - Include status indicator: 🟢 Active / 🟡 Degraded / 🔴 Dead
 - Place in the correct file under `dorks/`
 - Use modern GitHub Code Search syntax (`path:` not `filename:`)
