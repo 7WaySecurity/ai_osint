@@ -473,3 +473,193 @@ falsepositives:
   - Legitimate build scripts with many sequential steps
 level: high
 ```
+
+---
+
+## 🆕 v1.4.0 Detection Rules (June 2026)
+
+> Defensive monitoring for the agent-skill / OpenClaw attack surface. These rules
+> detect *the behavior* (unauthorized config change, exfiltration pattern,
+> unauthenticated MCP exposure) — they do not reproduce attack payloads.
+> Inspired by the Agent Threat Rules (ATR) open standard; rewritten as Sigma.
+
+### Rule 13: Unauthorized Modification of Agent Skill / Config Files
+
+> Detects writes to agent capability files (`SKILL.md`, `CLAUDE.md`, `AGENTS.md`,
+> `.cursor/rules`, `mcp.json`) outside of expected tooling — the persistence
+> vector behind ClawHavoc and skill-injection attacks.
+
+```yaml
+title: Unauthorized Agent Skill or Config File Modification
+id: 7a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d
+status: experimental
+description: >
+  Detects creation or modification of AI agent capability files (SKILL.md,
+  CLAUDE.md, AGENTS.md, .cursor/rules, mcp.json, .clawdbot configs) by processes
+  other than the approved agent/IDE. Malicious skills and prompt-injection chains
+  persist by writing to these instruction-layer artifacts.
+references:
+  - https://github.com/Agent-Threat-Rule/agent-threat-rules
+  - OWASP Agentic Top 10 (2026)
+author: 7WaySecurity
+date: 2026/06/16
+tags:
+  - attack.persistence
+  - attack.t1546
+  - attack.defense_evasion
+logsource:
+  category: file_event
+detection:
+  selection_files:
+    TargetFilename|endswith:
+      - '\SKILL.md'
+      - '\CLAUDE.md'
+      - '\AGENTS.md'
+      - '\mcp.json'
+      - '.cursor/mcp.json'
+  filter_expected:
+    Image|endswith:
+      - '\code.exe'
+      - '\cursor.exe'
+      - '\claude'
+      - '\node.exe'
+  condition: selection_files AND NOT filter_expected
+falsepositives:
+  - Legitimate manual edits by developers in an unlisted editor
+  - Backup/sync utilities touching project directories
+level: high
+```
+
+### Rule 14: Compound Read-and-Exfiltrate from Skill Execution
+
+> Detects the compound pattern where sensitive material (SSH keys, wallets,
+> credential stores, browser DBs) is both read and transmitted externally —
+> the AMOS-style behavior seen across ClawHavoc skills.
+
+```yaml
+title: Sensitive File Read Followed by External Transmission (Agent Context)
+id: 8b2c3d4e-5f6a-7b8c-9d0e-1f2a3b4c5d6e
+status: experimental
+description: >
+  Detects a process spawned by an AI agent runtime that reads sensitive files
+  (id_rsa, wallet.dat, keychain, browser credential stores) and then initiates
+  outbound transfer via curl/wget/fetch/POST. Matches the read-and-exfiltrate
+  compound pattern documented in agent-skill compromise campaigns.
+references:
+  - https://github.com/Agent-Threat-Rule/agent-threat-rules
+  - Snyk ToxicSkills (Feb 2026)
+author: 7WaySecurity
+date: 2026/06/16
+tags:
+  - attack.collection
+  - attack.t1552
+  - attack.exfiltration
+  - attack.t1041
+logsource:
+  category: process_creation
+detection:
+  selection_read:
+    CommandLine|contains:
+      - 'id_rsa'
+      - 'wallet.dat'
+      - 'keychain'
+      - '.aws/credentials'
+      - 'Login Data'
+  selection_exfil:
+    CommandLine|contains:
+      - 'curl'
+      - 'wget'
+      - 'Invoke-WebRequest'
+      - 'fetch('
+  condition: selection_read AND selection_exfil
+falsepositives:
+  - Legitimate backup or migration scripts
+  - Security tooling enumerating its own secrets store
+level: critical
+```
+
+### Rule 15: Unauthenticated MCP Server Exposure (Inbound)
+
+> Detects external clients reaching MCP endpoints without an Authorization header.
+> ~40% of remote MCP servers expose tools with no auth (2026 measurement).
+
+```yaml
+title: Unauthenticated MCP Endpoint Access from External Source
+id: 9c3d4e5f-6a7b-8c9d-0e1f-2a3b4c5d6e7f
+status: experimental
+description: >
+  Detects inbound requests to MCP transport endpoints (/mcp, /sse, /messages,
+  /mcp_message) from non-internal sources without authentication. Flags
+  Internet-exposed MCP servers, the dominant misconfiguration in the ecosystem.
+references:
+  - https://adversa.ai/blog/top-mcp-security-resources-june-2026/
+  - CVE-2026-11624
+author: 7WaySecurity
+date: 2026/06/16
+tags:
+  - attack.initial_access
+  - attack.t1190
+logsource:
+  category: webserver
+detection:
+  selection_uri:
+    cs-uri-stem|contains:
+      - '/mcp'
+      - '/sse'
+      - '/messages'
+      - '/mcp_message'
+  filter_auth:
+    cs-Authorization|exists: true
+  filter_internal:
+    src_ip|cidr:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+  condition: selection_uri AND NOT filter_auth AND NOT filter_internal
+falsepositives:
+  - MCP clients using non-header auth (query token, mTLS)
+  - Intentionally public, read-only MCP services
+level: high
+```
+
+### Rule 16: ClickFix-Style Prerequisite Command in Skill Manifest
+
+> Detects skill manifests that instruct the user to paste an encoded command as a
+> "prerequisite" — the ClickFix 2.0 social-engineering pattern. Static/CI rule.
+
+```yaml
+title: Encoded Prerequisite Command in Agent Skill Manifest
+id: a0d4e5f6-7b8c-9d0e-1f2a-3b4c5d6e7f80
+status: experimental
+description: >
+  Detects SKILL.md / manifest files that embed base64-encoded shell commands
+  framed as installation prerequisites. ClickFix 2.0 uses the agent as a trusted
+  intermediary to present a fake setup dialog and induce command execution.
+references:
+  - https://www.termdock.com/en/blog/clawhub-malicious-skills-incident
+author: 7WaySecurity
+date: 2026/06/16
+tags:
+  - attack.execution
+  - attack.t1204
+  - attack.command_and_control
+logsource:
+  category: file_event
+  product: ci_pipeline
+detection:
+  selection_manifest:
+    TargetFilename|endswith:
+      - '\SKILL.md'
+  selection_pattern:
+    Content|contains:
+      - 'base64 -d'
+      - 'echo'
+      - 'prerequisite'
+      - '| bash'
+      - '| sh'
+  condition: selection_manifest AND selection_pattern
+falsepositives:
+  - Legitimate skills documenting encoding examples
+  - Security training/demo content
+level: medium
+```

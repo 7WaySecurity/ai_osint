@@ -377,3 +377,64 @@ Wiz found publicly accessible ClickHouse DB at `oauth2callback.deepseek.com:9000
 | Breaking the Protocol | PROTOAMP framework; ATTESTMCP reduces attacks 52.8% → 12.4% | [arXiv](https://arxiv.org/pdf/2601.17549) |
 | MCP Threat Modeling | STRIDE/DREAD analysis of 5 MCP components | [arXiv](https://arxiv.org/pdf/2603.22489) |
 | Vulnerable MCP DB | **50 vulnerabilities**, 13 critical, 32 researchers. 67,057 MCP servers analyzed | [vulnerablemcp.info](https://vulnerablemcp.info/) |
+
+---
+
+## 🆕 v1.4.0 Threat Intelligence Updates (June 2026)
+
+> Focus: the OpenClaw / ClawHub supply-chain crisis and the broader agent-skill
+> attack surface. Figures are attributed to their primary sources; where counts
+> vary across reports, ranges are given rather than a single number.
+
+### The OpenClaw Agent Crisis — Escalation (Jan–June 2026)
+
+OpenClaw (formerly Clawdbot) became the first major AI-agent security crisis of 2026. It is a self-hosted autonomous agent with shell, filesystem, and browser access — so a compromised instance is a compromised computer, not just a chatbot.
+
+| Dimension | Reported figures | Source |
+|---|---|---|
+| Internet-exposed instances | ~135,000+ (early 2026); 30,000–42,000 in some scans, 63%–93% without auth | ARMO, Bitsight, Hive Security |
+| CVEs associated | 60+ to 138 over five months (7 critical, ~49 high) | multiple trackers |
+| One-click RCE | CVE-2026-25253 (CVSS 8.8) via WebSocket; patched v2026.1.29 | DEV / Blink |
+| Admin without credentials | CVE-2026-22172, CVE-2026-32922 (both CVSS 9.9) | cvefind |
+| 4-day CVE burst | 9 CVEs disclosed Mar 18–21, 2026 (highest 9.9) | ruh.ai |
+| ClawJacked | malicious sites silently hijack a running instance | Oasis Security |
+
+> ⚠️ **Posture recommended by multiple vendors for OpenClaw users: assume compromise.** Microsoft advised against deploying on machines holding sensitive data; Chinese authorities restricted state-enterprise use.
+
+### ClawHavoc — Marketplace Supply-Chain Campaign
+
+ClawHub (OpenClaw's official skill marketplace) was poisoned at scale. Skills install with the **same permissions as the agent** and there was **no mandatory review** — only a `SKILL.md` and a week-old GitHub account were needed to publish.
+
+- **Scale:** Koi Security's Feb 1 audit found **341 malicious of 2,857 skills (~12%)**, 335 traced to one coordinated actor. Antiy CERT later catalogued **1,184 malicious skills** historically published (Trojan/OpenClaw.PolySkill).
+- **Payload:** primarily **Atomic macOS Stealer (AMOS)** — harvests browser creds, keychain, crypto wallets, SSH keys, Telegram sessions.
+- **Technique — "ClickFix 2.0":** fake "prerequisite installation" steps inside `SKILL.md` cause the *agent itself* to present a fake setup dialog, tricking the user into pasting a base64 command. The AI agent becomes the trusted intermediary.
+- **Persistence:** malicious skills survived the CVE patch — patching the RCE did not remove already-installed skills or stop new uploads. ClawHub added verified skill screening only on Mar 26, 2026, ~8 weeks after the campaign began.
+
+> 📌 **What this repo does NOT publish:** specific live malicious skill names or step-by-step payload mechanics. The defensive value is in detection (see v1.4.0 Sigma rules) and inventory, not in redistributing the attack.
+
+### MCP Protocol Exposure — Measured at Scale
+
+- **Censys:** ~12,520 Internet-accessible MCP services, most unauthenticated.
+- **Authentication study:** ~40% of remote MCP servers expose tools with **no auth**; 9 CVEs traced to broken OAuth flows.
+- **VIPER-MCP:** swept ~40,000 MCP server repos → **106 zero-days, 67 CVEs**.
+- **BlueRock:** of 7,000+ MCP servers analyzed, **36.7% potentially vulnerable to SSRF**; PoC against Microsoft's MarkItDown MCP retrieved AWS IAM keys from EC2 metadata.
+- **OX Security:** poisoned **9 of 11 MCP marketplaces** with PoC servers; the root issue is the MCP SDK STDIO transport (Anthropic considers the behavior "expected").
+
+### New / Notable CVEs (since v1.2.0)
+
+| CVE | Component | Note |
+|---|---|---|
+| CVE-2026-26118 | Microsoft MCP server | AI tool hijacking |
+| CVE-2026-22252 | LibreChat MCP | same systemic STDIO class |
+| CVE-2026-22688 | WeKnora | same class |
+| CVE-2026-22708 | Cursor | shell built-in poisoning via indirect prompt injection (Pillar) |
+| CVE-2026-11624 | MCP spec | Origin-header validation (DNS rebinding class) |
+| CVE-2025-59536 / CVE-2026-21852 | Claude Code project files | RCE + token exfiltration via hooks (Check Point) |
+
+### Agent-Skill Ecosystem — Research Baseline
+
+- **Snyk ToxicSkills (Feb 2026):** of 3,984 skills from ClawHub + skills.sh, **13.4% had ≥1 critical issue**; **91% of confirmed malicious skills combined prompt injection with malware**.
+- **"Agent Skills in the Wild" (Liu et al., 2026):** 42,447 skills analyzed — **26.1% contained ≥1 vulnerability, 5.2% likely malicious**.
+- **Weaponization:** Cato Networks demonstrated deploying MedusaLocker ransomware via a modified Claude skill (disclosed to Anthropic Oct 30, 2025); the "consent gap" lets approved skills download/execute code without further prompts.
+
+> 📖 Sources: Koi Security, Antiy CERT, Snyk, OX Security, Censys, BlueRock, Check Point, Trend Micro, Bitsight, ARMO, VentureBeat, arXiv 2604.06550.

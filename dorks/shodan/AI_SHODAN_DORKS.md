@@ -215,3 +215,27 @@ http.html:"tabbyAPI" port:5000 KEYWORD
 # LocalAI
 http.title:"LocalAI" port:8080 KEYWORD
 ```
+
+---
+
+## 🆕 Agent Gateways & MCP — Expanded (v1.4.0)
+
+> 🔑 `KEYWORD` = your scope filter (`org:"Your Company"`, `net:`, `hostname:`).
+> Expands OpenClaw/MCP fingerprints following the 2026 exposure measurements.
+
+```
+# OpenClaw renamed instances — broader fingerprints
+http.title:"OpenClaw" KEYWORD
+http.html:"clawdbot" KEYWORD
+port:18789 "skills" KEYWORD
+http.html:"clawhub" KEYWORD
+
+# MCP transport endpoints (Censys counted ~12,520 exposed, mostly no-auth)
+http.html:"mcp" "tools" KEYWORD
+http.html:"Model Context Protocol" KEYWORD
+"/sse" "mcp" KEYWORD
+"/messages" "jsonrpc" KEYWORD
+
+# A2A (agent-to-agent) endpoints
+http.html:"a2a" "agent" KEYWORD
+```

@@ -150,3 +150,24 @@ services.http.response.html_title:"Tabby" AND services.port=8080 and KEYWORD
 # LocalAI
 services.http.response.html_title:"LocalAI" and KEYWORD
 ```
+
+---
+
+## 🆕 Agent Gateways & MCP — Expanded (v1.4.0)
+
+> 🔑 Replace `and KEYWORD` with a scope clause
+> (`and autonomous_system.organization: "Your Company"`).
+
+```
+# OpenClaw
+services.http.response.html_title:"OpenClaw" and KEYWORD
+services.http.response.body:"clawdbot" and KEYWORD
+services.port=18789 AND services.http.response.body:"skills" and KEYWORD
+
+# MCP transport
+services.http.response.body:"Model Context Protocol" and KEYWORD
+services.http.response.body:"jsonrpc" AND services.http.response.body:"tools" and KEYWORD
+
+# A2A
+services.http.response.body:"a2a" AND services.http.response.body:"agent" and KEYWORD
+```

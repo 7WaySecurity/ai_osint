@@ -233,3 +233,48 @@ path:fine_tune.jsonl "KEYWORD"
 
 ## Defender Tip
 GitHub **Secret Scanning** + **Push Protection** (free for public repos) catch most provider key formats before commit. Enable both org-wide; these dorks find what predates that or lives in forks/gists outside push protection.
+
+---
+
+## 🆕 Agent Skill & MCP Exposure (v1.4.0)
+
+> 🔑 `KEYWORD` convention applies. Scope with `org:`/`user:`/`repo:` to your own
+> code. These audit agent-capability files and MCP configs for exposure — the
+> surface behind the OpenClaw / ClawHavoc crisis.
+
+```
+# Agent capability / skill manifests in your repos
+path:SKILL.md "KEYWORD"
+path:AGENTS.md "mcp" "KEYWORD"
+path:CLAUDE.md "allow" "bash" "KEYWORD"
+path:.cursor/rules "KEYWORD"
+
+# OpenClaw / Clawdbot configs with embedded secrets
+path:.clawdbot "KEYWORD"
+path:.clawdbot/.env "KEYWORD"
+"openclaw" "skills" path:*.json "KEYWORD"
+
+# MCP auto-approve / over-permissioning (the consent-gap risk)
+path:*.json "enableAllProjectMcpServers" "true" "KEYWORD"
+path:.vscode/settings.json "chat.tools.autoApprove" "true" "KEYWORD"
+```
+
+---
+
+## 🆕 Skill-Injection Indicators (v1.4.0)
+
+> Audit your own skill content for the patterns flagged by Snyk ToxicSkills /
+> ATR. Scope with `org:`/`KEYWORD`.
+
+```
+# Encoded prerequisite commands (ClickFix 2.0 pattern)
+path:SKILL.md "base64 -d" "KEYWORD"
+path:SKILL.md "prerequisite" "curl" "KEYWORD"
+
+# Read-and-exfiltrate compound in skill scripts
+"id_rsa" "curl" path:SKILL.md "KEYWORD"
+"wallet.dat" path:*.sh "KEYWORD"
+```
+
+> 📌 These find the *pattern* for self-audit. Do not use them to enumerate or
+> redistribute third-party malicious skills.

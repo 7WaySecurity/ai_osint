@@ -105,3 +105,38 @@
 | Grok conversations indexed | 370,000+ | Fortune |
 | CIOs boosting AI investments | 94% | Logicalis 2026 |
 | Employees exposing data via AI | 57% | Logicalis 2026 |
+
+---
+
+## 🆕 v1.4.0 Resource Additions (June 2026)
+
+### Reports & Research
+- **Koi Security** — ClawHub audit (341 malicious of 2,857 skills)
+- **Antiy CERT** — ClawHavoc analysis (1,184 skills, Trojan/OpenClaw.PolySkill)
+- **Snyk ToxicSkills** — 3,984 skills audited; 13.4% with critical issues
+- **OX Security** — MCP Supply Chain Advisory (10 CVEs; 9 of 11 marketplaces poisoned)
+- **BlueRock** — 7,000+ MCP servers, 36.7% SSRF-vulnerable
+- **Censys** — ~12,520 Internet-accessible MCP services
+- **Trend Micro** — Network-exposed MCP servers as backdoors
+
+### Academic Papers
+- **"Agent Skills in the Wild" (Liu et al., 2026)** — 42,447 skills; 26.1% vulnerable, 5.2% malicious
+- **SkillSieve** — hierarchical triage for malicious skill detection (arXiv 2604.06550)
+- **Skill-Inject (Schmotz et al., 2026)** — benchmark for skill-file attacks
+- **VIPER-MCP** — 106 zero-days / 67 CVEs across ~40,000 MCP repos
+
+### Detection & Frameworks
+- **Agent Threat Rules (ATR)** — 425 open detection rules for agents
+- **SAFE-MCP (OpenSSF)** — Secure-MCP technique catalog
+- **NSA MCP design-considerations guidance** (June 2026)
+- **OWASP Agentic Top 10 (2026)** — ASI04 (agent registry poisoning)
+
+### Government / Advisories
+- **CERT-Bund** WID-SEC-2026-0856 (OpenClaw)
+- **CISA KEV / BOD 26-04** — accelerated 3-day patch mandate context
+
+### Key Statistics (June 2026)
+- 135,000+ exposed OpenClaw instances (63%–93% without auth)
+- 1,184 malicious skills historically on ClawHub
+- ~40% of remote MCP servers expose tools with no authentication
+- 138 CVEs associated with OpenClaw in five months

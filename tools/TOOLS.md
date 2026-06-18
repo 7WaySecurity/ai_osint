@@ -142,3 +142,75 @@ Reduces MCP attack success from 52.8% → 12.4% with 8.3ms overhead. Adds capabi
 | **Status** | **UPDATED:** 50 vulnerabilities, 13 critical, 32 researchers |
 
 New entries: CVE-2026-25536 (TypeScript SDK), CVE-2026-30615/30624/30616/40933 (Ox batch), CVE-2026-33032 (nginx-ui MCPwn), CVE-2026-27825/27826 (Atlassian). Academic analysis of 67,057 MCP servers across 6 registries.
+
+---
+
+## 🆕 v1.4.0 Tool Additions (June 2026)
+
+> All AI-specific, open-source, and verified against their repos (June 2026).
+> Theme: MCP / agent-skill auditing — the defensive response to the OpenClaw crisis.
+
+### Agent Threat Rules (ATR)
+| Field | Details |
+|---|---|
+| **URL** | [github.com/Agent-Threat-Rule/agent-threat-rules](https://github.com/Agent-Threat-Rule/agent-threat-rules) |
+| **What** | Open detection standard — "like Sigma, but for AI agents." 425 rules covering skill compromise, MCP abuse, prompt injection, exfiltration. Maps to OWASP Agentic Top 10, MITRE ATLAS, NIST. |
+| **By** | Community / OWASP A-S-R-H; shipped in Microsoft AGT, Cisco AI Defense, MISP |
+| **AI-Specific** | ✅ Purpose-built detection format for agent/skill/MCP threats |
+
+### Cisco DefenseClaw (governance suite)
+| Field | Details |
+|---|---|
+| **URL** | [github.com/cisco-ai-defense/defenseclaw](https://github.com/cisco-ai-defense/defenseclaw) |
+| **What** | Open-source agentic governance layer: admission control that scans skills, MCP servers, plugins, and generated code before they run. Bundles skill-scanner, mcp-scanner, a2a-scanner, CodeGuard static analysis, and an AI-BOM generator. |
+| **By** | Cisco AI Defense (Apache 2.0) |
+| **AI-Specific** | ✅ Built for OpenClaw / agent ecosystems |
+
+### Cisco MCP Scanner
+| Field | Details |
+|---|---|
+| **URL** | [github.com/cisco-ai-defense/mcp-scanner](https://github.com/cisco-ai-defense/mcp-scanner) |
+| **What** | Standalone CLI / REST scanner for MCP servers using YARA + LLM-as-judge + Cisco inspect API. Static/offline mode for CI/CD and air-gapped use; pip-audit integration for vulnerable Python deps. |
+| **By** | Cisco AI Defense |
+| **AI-Specific** | ✅ MCP-specific |
+
+### Cisco Skill Scanner
+| Field | Details |
+|---|---|
+| **URL** | via [cisco-ai-defense](https://github.com/cisco-ai-defense) org |
+| **What** | Detects prompt injection, exfiltration, and malicious patterns in agent skills (Cursor, Claude Code, Codex). |
+| **By** | Cisco AI Defense (Apache 2.0) |
+| **AI-Specific** | ✅ Agent-skill-specific |
+
+### AgentAuditKit
+| Field | Details |
+|---|---|
+| **Install** | `pip install agent-audit-kit` |
+| **What** | 77 rules across 13 scanners auditing 13 AI agent platforms (Claude Code, Cursor, Copilot, Windsurf, Amazon Q, Gemini CLI). Checks MCP config exposure, hardcoded keys, invisible-Unicode tool-description hijacking, taint analysis. Maps to OWASP MCP Top 10. |
+| **By** | Independent (Sattyam Jain) |
+| **AI-Specific** | ✅ |
+
+### mcp-audit
+| Field | Details |
+|---|---|
+| **What** | Offline MCP config auditor across 8 MCP clients; cross-server attack paths, IDE extension security, SAST for Python/TypeScript (37 rules). Maps findings to OWASP MCP Top 10. |
+| **By** | Independent (Adam Dudley) |
+| **AI-Specific** | ✅ |
+
+### SkillSpector
+| Field | Details |
+|---|---|
+| **What** | Agent-skill security scanner — 64 vulnerability patterns across 16 categories; 0–100 risk score with severity labels. Audits skills before deployment. |
+| **By** | Independent |
+| **AI-Specific** | ✅ |
+
+### VIPER-MCP
+| Field | Details |
+|---|---|
+| **What** | Combined static + dynamic (taint-style) analysis framework for MCP servers. Ran across ~40,000 server repos → 106 zero-days / 67 CVEs. |
+| **By** | Academic research |
+| **AI-Specific** | ✅ MCP-specific |
+
+> Other defensive references worth tracking (knowledge bases, not tools):
+> [awesome-agent-skills-security](https://github.com/LLMSecurity/awesome-agent-skills-security),
+> SAFE-MCP (OpenSSF), and the NSA MCP design-considerations guidance (June 2026).

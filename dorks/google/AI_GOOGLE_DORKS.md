@@ -264,3 +264,51 @@ site:github.com "mythos" "vulnerability" "exploit" "KEYWORD"
 site:github.com "glasswing" "anthropic" "KEYWORD"
 site:github.com "mcpSafetyScanner" "KEYWORD"
 ```
+
+---
+
+## 🆕 Agent Skill & OpenClaw Exposure (v1.4.0)
+
+> 🔑 `KEYWORD` convention applies. Scope to your own org/brand/domain. These
+> surface exposed agent-skill registries, OpenClaw configs, and public `SKILL.md`
+> artifacts — for **self-audit**, not for finding others' live secrets.
+
+```
+# Public SKILL.md / agent capability files in your own repos
+site:github.com path:SKILL.md "KEYWORD"
+site:github.com path:AGENTS.md "mcp" "KEYWORD"
+
+# OpenClaw / Clawdbot configs and env files
+site:github.com ".clawdbot" "KEYWORD"
+site:github.com "openclaw" "config" "KEYWORD"
+site:github.com path:.clawdbot/.env "KEYWORD"
+
+# Skill registry references (ClawHub / skills.sh) tied to your org
+site:github.com "clawhub" "KEYWORD"
+site:github.com "skills.sh" "KEYWORD"
+```
+
+---
+
+## 🆕 Malware-Lure / Fake Skill Detection (v1.4.0)
+
+> ⚠️ Defensive use only — detect **impersonation of your brand** in fake skills.
+> Set `KEYWORD` to your product/brand name to find typosquats and lures.
+
+```
+site:github.com "skill" "KEYWORD" "install" "base64"
+site:github.com "SKILL.md" "KEYWORD" "prerequisite"
+```
+
+---
+
+## 🆕 Exposed MCP Endpoints via Search (v1.4.0)
+
+> MCP transport endpoints occasionally get indexed when fronted by web servers.
+> Scope with your own domain.
+
+```
+inurl:"/mcp" "tools" "KEYWORD"
+inurl:"/sse" "mcp" "KEYWORD"
+site:*.fly.dev "mcp_message" "KEYWORD"
+```
