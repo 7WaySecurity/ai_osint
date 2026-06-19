@@ -666,4 +666,4 @@ Code: [MIT](LICENSE) · Data & Documentation: [CC BY-SA 4.0](https://creativecom
 
 ---
 
-<p align="center"><b>Maintained by <a href="https://7waysecurity.co">7WaySecurity</a></b> · Last updated June 2026 · v1.3.0</p>
+<p align="center"><b>Maintained by <a href="https://7waysecurity.co">7WaySecurity</a></b> · Last updated June 2026 · v1.4.0</p>
