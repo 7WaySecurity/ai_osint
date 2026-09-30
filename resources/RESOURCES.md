@@ -88,6 +88,7 @@
 | Vulnerable MCP Database | **UPDATED:** 50 vulns, 13 critical, 32 researchers. 67,057 servers analyzed across 6 registries. | [vulnerablemcp.info](https://vulnerablemcp.info/) |
 | ChatGPT Data Leaks Timeline | 2023-2026 timeline: DNS exfil, SVG XSS, Deep Research zero-click, Mixpanel breach. | [wald.ai](https://wald.ai/blog/chatgpt-data-leaks-and-security-incidents-20232024-a-comprehensive-overview) |
 | AI Coding Security Stats 2026 | 45% AI code has vulns, 73% systems exposed to prompt injection, 300K+ creds on dark web. | [SQ Magazine](https://sqmagazine.co.uk/ai-coding-security-vulnerability-statistics/) |
+| Orca AI Incident Archive | Open database of real-world AI agent security events from 2025 on (incidents, CVEs, research, advisories), each source-linked and labelled for confirmed harm. JSON/CSV exports, CC BY 4.0. | [GitHub](https://github.com/Continuum-AI-Corp/Orca-AI-Incident-Archive) |
 
 ### Key Statistics (April 2026)
 
