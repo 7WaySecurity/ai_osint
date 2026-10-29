@@ -28,6 +28,17 @@ It now also covers MCP supply chain attacks (systemic STDIO RCE, marketplace poi
 
 ---
 
+## 🆕 Shadow AI External Footprint (v2.0.0)
+
+Everything above answers *"what AI is exposed on the internet?"*. The new [`shadow-ai/`](shadow-ai/) section answers *"what unsanctioned AI is **my organization** exposing, measured only from public sources?"*
+
+- Five independent passive surfaces — self-hosted AI on owned infrastructure, certificate-transparency names, AI-agent configs in public code, chat shares referenced on third-party sites, employee-built apps — scoped to one organization by ASN, netblock, certificate name, GitHub org and employee handles.
+- A scoring model with explicit **sanctioned-use subtraction**, so a vendor customer story is subtracted rather than counted.
+- A passive collector (`shadow-ai/scripts/shadow_ai_footprint.py`). Nothing in the section contacts a discovered host.
+- A clear line between what is visible from outside and what is not, and what is left out by design (honeypot-dominated fingerprints, unstable share paths).
+
+Start with [`shadow-ai/README.md`](shadow-ai/README.md), then [`shadow-ai/SIGNALS.md`](shadow-ai/SIGNALS.md).
+
 ## Why This Exists
 
 Organizations are deploying LLMs, vector databases, and AI agents faster than they can secure them. The result:

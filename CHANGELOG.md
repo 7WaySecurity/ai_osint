@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.0.0] — 2026-10-28 — Shadow AI External Footprint
+
+**Why a major version:** the repository's scope changes from *"which AI surfaces are exposed on the internet"* to *"measure one organization's unsanctioned AI from outside"*. Every previous dork still works; the new section reuses them with organization scoping.
+
+### Added
+- `shadow-ai/README.md` — methodology: five external surfaces (S1 infrastructure, S2 CT logs, S3 agent configs in code, S4 shares on third-party sites, S5 employee-built apps), organization scoping inputs, scoring model with sanctioned-use subtraction, legal boundaries (passive vs. active; Colombia Ley 1273/2009).
+- `shadow-ai/SIGNALS.md` — every query by surface with context and expected noise, plus what is left out by design and why.
+- `shadow-ai/INTERNAL_ANNEX.md` — links to public internal detections (Splunk *Local LLM Framework DNS Query*, Microsoft *AI Agents – No Authentication Required*, Elastic/Splunk rule repos). No duplication.
+- `shadow-ai/scripts/shadow_ai_footprint.py` — passive collector: crt.sh + Cert Spotter + GitHub Code Search (`gh`) + optional Shodan count/facets → Markdown report. Prints the S4/S5 Google queries for manual execution.
+- README: Shadow AI section and link.
+
+### Left out by design
+- LiteLLM and ComfyUI scan fingerprints — honeypot-dominated (Wiz Sep 2026, Censys Apr 2026).
+- Port-only fingerprints (vLLM, llama.cpp, LM Studio, GPT4All).
+- Share paths for Mistral, Qwen, Perplexity, Meta AI, Kimi, Manus, Poe, Character.ai — no stable public share path.
+- Copilot Studio no-auth agents — detected in-tenant with Microsoft's Advanced Hunting query, not from outside.
+
 ## [1.3.0] — 2026-06-16 — Verification Refresh + `KEYWORD` Convention
 
 ### Changed (breaking, intentional)
